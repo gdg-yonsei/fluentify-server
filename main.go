@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fluentify-server/src/router"
+	"github.com/gdsc-ys/fluentify-server/src/router"
 )
 
 func main() {
