@@ -3,6 +3,7 @@ package router
 import (
 	"net/http"
 
+	"github.com/gdsc-ys/fluentify-server/src/handler"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 )
@@ -20,6 +21,8 @@ func Router() *echo.Echo {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
+
+	e.POST("/GetUser", handler.GetUser)
 
 	return e
 }

@@ -5,6 +5,7 @@ go 1.21.4
 require (
 	github.com/labstack/echo/v4 v4.11.3
 	github.com/stretchr/testify v1.8.4
+	google.golang.org/protobuf v1.32.0
 )
 
 require (
