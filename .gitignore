@@ -1,3 +1,2 @@
 .env
-gen/
 *.db
