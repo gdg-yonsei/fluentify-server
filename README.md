@@ -1,4 +1,25 @@
-# Fluentify
+# Fluentify Server
+
+## Getting Started
+
+### Build & run using Docker Compose
+
+```bash
+docker compose up --build
+```
+
+### If go is installed locally
+
+```bash
+# Golang version 1.21.4
+make build
+```
+
+### If you want to generate protobuf only
+
+```bash
+make proto
+```
 
 ## Contributing
 
