@@ -1,15 +1,15 @@
 package service
 
 import (
-	"github.com/gdsc-ys/fluentify-server/src/domain"
+	"github.com/gdsc-ys/fluentify-server/src/model"
 )
 
-func GetUser(id string) domain.User {
-	dummyUser := domain.User{
+func GetUser(id string) model.User {
+	dummyUser := model.User{
 		Id:           "fake",
 		Name:         "fake",
 		Age:          1,
-		DisorderType: domain.DISORDER_TYPE_UNSPECIFIED,
+		DisorderType: model.DISORDER_TYPE_HEARING,
 	}
 
 	return dummyUser

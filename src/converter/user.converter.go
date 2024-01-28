@@ -2,10 +2,10 @@ package converter
 
 import (
 	pb "github.com/gdsc-ys/fluentify-server/gen/idl/proto"
-	"github.com/gdsc-ys/fluentify-server/src/domain"
+	"github.com/gdsc-ys/fluentify-server/src/model"
 )
 
-func ConvertUser(user domain.User) pb.UserDTO {
+func ConvertUser(user model.User) pb.UserDTO {
 	return pb.UserDTO{
 		Id:           user.Id,
 		Name:         user.Name,
@@ -14,7 +14,7 @@ func ConvertUser(user domain.User) pb.UserDTO {
 	}
 }
 
-func convertDisorderType(disorderType domain.DisorderType) pb.DisorderType {
+func convertDisorderType(disorderType model.DisorderType) pb.DisorderType {
 	switch disorderType {
 	default:
 		return pb.DisorderType_DISORDER_TYPE_UNSPECIFIED
