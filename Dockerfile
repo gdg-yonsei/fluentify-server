@@ -1,3 +1,8 @@
+FROM bufbuild/buf:latest AS buf
+WORKDIR /build
+COPY . .
+RUN buf generate
+
 FROM golang:1.21-alpine AS builder
 
 ENV GO111MODULE=on \
@@ -7,6 +12,7 @@ ENV GO111MODULE=on \
 
 WORKDIR /build
 COPY . .
+COPY --from=buf /build/gen ./gen
 RUN go mod download
 RUN go build -o main .
 WORKDIR /dist
