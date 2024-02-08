@@ -15,7 +15,7 @@ func GetUser(id string) model.User {
 	return dummyUser
 }
 
-func UpdateUser(id string, args map[string]interface{}) model.User {
+func UpdateUser(id string, updateUserDTO map[string]interface{}) model.User {
 
 	dummyUser := model.User{
 		Id:           "fake",
@@ -24,7 +24,7 @@ func UpdateUser(id string, args map[string]interface{}) model.User {
 		DisorderType: model.DISORDER_TYPE_HEARING,
 	}
 
-	for field, value := range args {
+	for field, value := range updateUserDTO {
 		switch field {
 		case "name":
 			dummyUser.Name = value.(string)
