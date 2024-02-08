@@ -9,4 +9,19 @@ services:
     volumes:
       - .:/dist
     ports:
-      - 8080:8080
+      - '80:8080'
+
+  firebase-emulator:
+    build:
+      context: ./firebase-emulator
+      dockerfile: Dockerfile
+    image: 'firebase-emulator'
+    profiles: ["dev"]
+    ports:
+      - '9199:9199'
+      - '9099:9099'
+      - '9080:9080'
+      - '4000:4000'
+    volumes:
+      - './firebase-emulator:/firebase-emulator'
+    command: 'firebase emulators:start --project fluentify-test'

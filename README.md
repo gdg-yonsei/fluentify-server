@@ -8,6 +8,12 @@
 docker compose up --build
 ```
 
+### To run with local Firebase Emulator
+
+```bash
+docker compose --profile dev up --build
+```
+
 ### If go is installed locally
 
 ```bash
