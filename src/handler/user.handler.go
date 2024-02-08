@@ -57,3 +57,18 @@ func UpdateUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, pb.UpdateUserResponse{User: &userDTO})
 
 }
+
+func DeleteUser(c echo.Context) error {
+	var request = pb.DeleteUserRequest{}
+	if err := c.Bind(&request); err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	if request.Id == "" {
+		return c.JSON(http.StatusBadRequest, "Id is required")
+	}
+
+	deletedUserId := service.DeleteUser(request.Id)
+
+	return c.JSON(http.StatusOK, pb.DeleteUserResponse{Id: deletedUserId})
+}

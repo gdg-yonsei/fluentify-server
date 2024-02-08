@@ -37,3 +37,7 @@ func UpdateUser(id string, args map[string]interface{}) model.User {
 
 	return dummyUser
 }
+
+func DeleteUser(id string) string {
+	return id
+}
