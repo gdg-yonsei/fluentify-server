@@ -2,6 +2,11 @@
 
 ## Getting Started
 
+### Setup `.env` file
+```bash
+$ cp .env.example .env
+```
+
 ### Build & run using Docker Compose
 
 ```bash
