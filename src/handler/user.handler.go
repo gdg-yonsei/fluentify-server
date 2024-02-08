@@ -35,23 +35,23 @@ func UpdateUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Id is required")
 	}
 
-	updateArgs := make(map[string]interface{})
+	userUpdateDTO := make(map[string]interface{})
 
 	switch {
 	case request.GetName() != "":
-		updateArgs["name"] = request.GetName()
+		userUpdateDTO["name"] = request.GetName()
 
 	case request.GetAge() != 0:
-		updateArgs["age"] = int(request.GetAge())
+		userUpdateDTO["age"] = int(request.GetAge())
 
 	case request.GetDisorderType() != 0:
-		updateArgs["disorderType"] = request.GetDisorderType()
+		userUpdateDTO["disorderType"] = converter.ConvertDisorderType(request.GetDisorderType())
 
 	default:
 		return c.JSON(http.StatusBadRequest, "At least one field is required")
 	}
 
-	user := service.UpdateUser(request.Id, updateArgs)
+	user := service.UpdateUser(request.Id, userUpdateDTO)
 	userDTO := converter.ConvertUser(user)
 
 	return c.JSON(http.StatusOK, pb.UpdateUserResponse{User: &userDTO})
