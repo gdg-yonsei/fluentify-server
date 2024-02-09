@@ -9,23 +9,25 @@ import (
 	"net/http"
 )
 
-func AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		authHeader := c.Request().Header.Get("Authorization")
-		if err := checkAuthHeader(authHeader); err != nil {
-			return c.String(err.(*echo.HTTPError).Code, err.Error())
+func AuthMiddleware(firebaseApp *firebase.App) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			authHeader := c.Request().Header.Get("Authorization")
+			if err := checkAuthHeader(authHeader); err != nil {
+				return c.String(err.(*echo.HTTPError).Code, err.Error())
+			}
+			idToken := authHeader[len("Bearer "):]
+
+			client := getAuthClient(firebaseApp)
+			token, err := client.VerifyIDToken(context.Background(), idToken)
+			if err != nil {
+				return c.String(http.StatusUnauthorized, "Invalid token")
+			}
+
+			c.Set("uid", token.UID)
+
+			return next(c)
 		}
-		idToken := authHeader[len("Bearer "):]
-
-		client := getAuthClient()
-		token, err := client.VerifyIDToken(context.Background(), idToken)
-		if err != nil {
-			return c.String(http.StatusUnauthorized, "Invalid token")
-		}
-
-		c.Set("uid", token.UID)
-
-		return next(c)
 	}
 }
 
@@ -40,15 +42,8 @@ func checkAuthHeader(authHeader string) error {
 }
 
 // TODO: DI 로 빼기
-func getAuthClient() *auth.Client {
-	ctx := context.Background()
-
-	app, err := firebase.NewApp(ctx, nil)
-	if err != nil {
-		log.Fatalf("error initializing app: %v", err)
-	}
-
-	client, err := app.Auth(ctx)
+func getAuthClient(firebaseApp *firebase.App) *auth.Client {
+	client, err := firebaseApp.Auth(context.Background())
 	if err != nil {
 		log.Fatalf("error getting Auth client: %v", err)
 	}
