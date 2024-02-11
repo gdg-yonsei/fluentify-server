@@ -2,20 +2,24 @@ package config
 
 import (
 	"github.com/gdsc-ys/fluentify-server/src/handler"
+	"github.com/gdsc-ys/fluentify-server/src/middleware"
 	"github.com/gdsc-ys/fluentify-server/src/service"
 )
 
 type Initialization struct {
-	userService service.UserService
-	UserHandler handler.UserHandler
+	AuthMiddleware middleware.AuthMiddleware
+	userService    service.UserService
+	UserHandler    handler.UserHandler
 }
 
 func NewInitialization(
+	authMiddleware middleware.AuthMiddleware,
 	userService service.UserService,
 	userHandler handler.UserHandler,
 ) *Initialization {
 	return &Initialization{
-		userService: userService,
-		UserHandler: userHandler,
+		AuthMiddleware: authMiddleware,
+		userService:    userService,
+		UserHandler:    userHandler,
 	}
 }

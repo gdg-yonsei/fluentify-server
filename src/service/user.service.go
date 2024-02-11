@@ -1,7 +1,7 @@
 package service
 
 import (
-	firebase "firebase.google.com/go/v4"
+	"firebase.google.com/go/v4/auth"
 	"github.com/gdsc-ys/fluentify-server/src/model"
 )
 
@@ -10,7 +10,7 @@ type UserService interface {
 }
 
 type UserServiceImpl struct {
-	firebaseApp *firebase.App
+	authClient *auth.Client
 }
 
 func (service *UserServiceImpl) GetUser(id string) model.User {
@@ -24,8 +24,8 @@ func (service *UserServiceImpl) GetUser(id string) model.User {
 	return dummyUser
 }
 
-func UserServiceInit(firebaseApp *firebase.App) *UserServiceImpl {
+func UserServiceInit(authClient *auth.Client) *UserServiceImpl {
 	return &UserServiceImpl{
-		firebaseApp: firebaseApp,
+		authClient: authClient,
 	}
 }

@@ -8,6 +8,7 @@ package config
 
 import (
 	"github.com/gdsc-ys/fluentify-server/src/handler"
+	"github.com/gdsc-ys/fluentify-server/src/middleware"
 	"github.com/gdsc-ys/fluentify-server/src/service"
 	"github.com/google/wire"
 )
@@ -16,15 +17,23 @@ import (
 
 func Init() *Initialization {
 	app := InitializeFirebaseApp()
-	userServiceImpl := service.UserServiceInit(app)
+	client := NewFirebaseAuthClient(app)
+	authMiddleware := middleware.AuthMiddleware{
+		authClient: client,
+	}
+	userServiceImpl := service.UserServiceInit(client)
 	userHandlerImpl := handler.UserHandlerInit(userServiceImpl)
-	initialization := NewInitialization(userServiceImpl, userHandlerImpl)
+	initialization := NewInitialization(authMiddleware, userServiceImpl, userHandlerImpl)
 	return initialization
 }
 
 // wire.go:
 
 var firebaseApp = wire.NewSet(InitializeFirebaseApp)
+
+var firebaseAuthClient = wire.NewSet(NewFirebaseAuthClient)
+
+var authMiddlewareSet = wire.NewSet(wire.Struct(new(middleware.AuthMiddleware), "*"))
 
 var userServiceSet = wire.NewSet(service.UserServiceInit, wire.Bind(new(service.UserService), new(*service.UserServiceImpl)))
 
