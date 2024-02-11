@@ -51,11 +51,12 @@ func UpdateUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "At least one field is required")
 	}
 
-	user := service.UpdateUser(request.Id, userUpdateDTO)
-	userDTO := converter.ConvertUser(user)
-
-	return c.JSON(http.StatusOK, pb.UpdateUserResponse{User: &userDTO})
-
+	if user, err := service.UpdateUser(request.Id, userUpdateDTO); err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	} else {
+		userDTO := converter.ConvertUser(user)
+		return c.JSON(http.StatusOK, pb.UpdateUserResponse{User: &userDTO})
+	}
 }
 
 func DeleteUser(c echo.Context) error {
