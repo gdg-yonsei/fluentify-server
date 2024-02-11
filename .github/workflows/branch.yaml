@@ -54,4 +54,4 @@ jobs:
           instance_name: fluentify-server
           zone: us-west4-b
           ssh_private_key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
-          command: cd fluentify-server && sh ./bin/deploy.sh
+          command: cd ~/fluentify-server && pwd && sh ./bin/deploy.sh
