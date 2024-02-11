@@ -38,3 +38,22 @@ jobs:
 
       - name: Test
         run: go test -race -v ./...
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [lint, build]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup GCP Auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA }}
+
+      - name: SSH into instance and run deploy command
+        uses: google-github-actions/ssh-compute@v1
+        with:
+          instance_name: fluentify-server
+          zone: us-west4-b
+          ssh_private_key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
+          command: |
+            cd ${{ github.repository.name }}
+            sh ./bin/deploy.sh
