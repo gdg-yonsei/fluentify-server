@@ -23,6 +23,8 @@ func Router() *echo.Echo {
 	})
 
 	e.POST("/GetUser", handler.GetUser)
+	e.POST("/UpdateUser", handler.UpdateUser)
+	e.POST("/DeleteUser", handler.DeleteUser)
 
 	return e
 }
