@@ -8,7 +8,7 @@ import (
 
 type Initialization struct {
 	AuthMiddleware middleware.AuthMiddleware
-	userService    service.UserService
+	UserService    service.UserService
 	UserHandler    handler.UserHandler
 }
 
@@ -19,7 +19,7 @@ func NewInitialization(
 ) *Initialization {
 	return &Initialization{
 		AuthMiddleware: authMiddleware,
-		userService:    userService,
+		UserService:    userService,
 		UserHandler:    userHandler,
 	}
 }
