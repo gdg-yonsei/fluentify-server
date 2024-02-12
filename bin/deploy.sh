@@ -8,4 +8,4 @@ docker image prune -af
 
 # Build and run the docker containers
 docker compose build
-docker compose up --force-recreate
+docker compose up -d --force-recreate
