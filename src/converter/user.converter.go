@@ -20,3 +20,10 @@ func convertDisorderType(disorderType model.DisorderType) pb.DisorderType {
 		return pb.DisorderType_DISORDER_TYPE_UNSPECIFIED
 	}
 }
+
+func ConvertDisorderType(disorderType pb.DisorderType) model.DisorderType {
+	switch disorderType {
+	default:
+		return model.DISORDER_TYPE_SIGHT
+	}
+}

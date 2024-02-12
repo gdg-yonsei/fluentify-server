@@ -21,7 +21,10 @@ func Router(init *config.Initialization) *echo.Echo {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
+
 	e.POST("/GetUser", init.UserHandler.GetUser)
+	e.POST("/UpdateUser", init.UserHandler.UpdateUser)
+	e.POST("/DeleteUser", init.UserHandler.DeleteUser)
 
 	return e
 }

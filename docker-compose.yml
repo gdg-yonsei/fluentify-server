@@ -10,6 +10,7 @@ services:
       - .:/dist
     ports:
       - '80:8080'
+    restart: 'on-failure'
 
   firebase-emulator:
     build:
