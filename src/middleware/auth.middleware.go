@@ -7,11 +7,15 @@ import (
 	"net/http"
 )
 
-type AuthMiddleware struct {
+type AuthMiddleware interface {
+	Verify() echo.MiddlewareFunc
+}
+
+type AuthMiddlewareImpl struct {
 	authClient *auth.Client
 }
 
-func (m *AuthMiddleware) Verify() echo.MiddlewareFunc {
+func (m *AuthMiddlewareImpl) Verify() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			authHeader := c.Request().Header.Get("Authorization")
@@ -32,7 +36,7 @@ func (m *AuthMiddleware) Verify() echo.MiddlewareFunc {
 	}
 }
 
-func (m *AuthMiddleware) checkAuthHeader(authHeader string) error {
+func (m *AuthMiddlewareImpl) checkAuthHeader(authHeader string) error {
 	if authHeader == "" {
 		return echo.NewHTTPError(http.StatusUnauthorized, "Authorization header needed")
 	}
@@ -42,8 +46,8 @@ func (m *AuthMiddleware) checkAuthHeader(authHeader string) error {
 	return nil
 }
 
-func NewAuthMiddleware(authClient *auth.Client) *AuthMiddleware {
-	return &AuthMiddleware{
+func AuthMiddlewareInit(authClient *auth.Client) *AuthMiddlewareImpl {
+	return &AuthMiddlewareImpl{
 		authClient: authClient,
 	}
 }

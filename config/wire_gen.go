@@ -18,12 +18,10 @@ import (
 func Init() *Initialization {
 	app := InitializeFirebaseApp()
 	client := NewFirebaseAuthClient(app)
-	authMiddleware := middleware.AuthMiddleware{
-		authClient: client,
-	}
+	authMiddlewareImpl := middleware.AuthMiddlewareInit(client)
 	userServiceImpl := service.UserServiceInit(client)
 	userHandlerImpl := handler.UserHandlerInit(userServiceImpl)
-	initialization := NewInitialization(authMiddleware, userServiceImpl, userHandlerImpl)
+	initialization := NewInitialization(authMiddlewareImpl, userServiceImpl, userHandlerImpl)
 	return initialization
 }
 
@@ -33,7 +31,7 @@ var firebaseApp = wire.NewSet(InitializeFirebaseApp)
 
 var firebaseAuthClient = wire.NewSet(NewFirebaseAuthClient)
 
-var authMiddlewareSet = wire.NewSet(wire.Struct(new(middleware.AuthMiddleware), "*"))
+var authMiddlewareSet = wire.NewSet(middleware.AuthMiddlewareInit, wire.Bind(new(middleware.AuthMiddleware), new(*middleware.AuthMiddlewareImpl)))
 
 var userServiceSet = wire.NewSet(service.UserServiceInit, wire.Bind(new(service.UserService), new(*service.UserServiceImpl)))
 
