@@ -11,6 +11,8 @@ import (
 
 type UserHandler interface {
 	GetUser(c echo.Context) error
+	UpdateUser(c echo.Context) error
+	DeleteUser(c echo.Context) error
 }
 
 type UserHandlerImpl struct {

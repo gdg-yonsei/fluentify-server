@@ -7,6 +7,8 @@ import (
 
 type UserService interface {
 	GetUser(id string) model.User
+	UpdateUser(id string, updateUserDTO map[string]interface{}) (model.User, error)
+	DeleteUser(id string) string
 }
 
 type UserServiceImpl struct {
