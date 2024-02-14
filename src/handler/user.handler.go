@@ -60,21 +60,22 @@ func UpdateUser(c echo.Context) error {
 
 	userUpdateDTO := make(map[string]interface{})
 
-	userUpdateDTO["uid"] = c.Get("uid")
+	if name := request.GetName(); name != "" {
+		userUpdateDTO["name"] = name
+	}
+	if age := request.GetAge(); age != 0 {
+		userUpdateDTO["age"] = int(age)
+	}
 
-	switch {
-	case request.GetName() != "":
-		userUpdateDTO["name"] = request.GetName()
+	if disorderType := request.GetDisorderType(); disorderType != 0 {
+		userUpdateDTO["disorderType"] = disorderType.Number()
+	}
 
-	case request.GetAge() != 0:
-		userUpdateDTO["age"] = int(request.GetAge())
-
-	case request.GetDisorderType() != 0:
-		userUpdateDTO["disorderType"] = request.GetDisorderType().Number()
-
-	default:
+	if len(userUpdateDTO) == 0 {
 		return c.JSON(http.StatusBadRequest, "At least one field is required")
 	}
+
+	userUpdateDTO["uid"] = c.Get("uid")
 
 	if user, err := service.UpdateUser(client, userUpdateDTO); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
