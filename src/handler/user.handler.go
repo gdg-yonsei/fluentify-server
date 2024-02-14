@@ -54,10 +54,6 @@ func UpdateUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	// if request.Id == "" {
-	// 	return c.JSON(http.StatusBadRequest, "Id is required")
-	// }
-
 	userUpdateDTO := make(map[string]interface{})
 
 	if name := request.GetName(); name != "" {
