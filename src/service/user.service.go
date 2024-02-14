@@ -1,10 +1,21 @@
 package service
 
 import (
+	"firebase.google.com/go/v4/auth"
 	"github.com/gdsc-ys/fluentify-server/src/model"
 )
 
-func GetUser(id string) model.User {
+type UserService interface {
+	GetUser(id string) model.User
+	UpdateUser(id string, updateUserDTO map[string]interface{}) (model.User, error)
+	DeleteUser(id string) string
+}
+
+type UserServiceImpl struct {
+	authClient *auth.Client
+}
+
+func (service *UserServiceImpl) GetUser(id string) model.User {
 	dummyUser := model.User{
 		Id:           "fake",
 		Name:         "fake",
@@ -15,7 +26,7 @@ func GetUser(id string) model.User {
 	return dummyUser
 }
 
-func UpdateUser(id string, updateUserDTO map[string]interface{}) (model.User, error) {
+func (service *UserServiceImpl) UpdateUser(id string, updateUserDTO map[string]interface{}) (model.User, error) {
 
 	dummyUser := model.User{
 		Id:           "fake",
@@ -41,6 +52,12 @@ func UpdateUser(id string, updateUserDTO map[string]interface{}) (model.User, er
 	return dummyUser, nil
 }
 
-func DeleteUser(id string) string {
+func (service *UserServiceImpl) DeleteUser(id string) string {
 	return id
+}
+
+func UserServiceInit(authClient *auth.Client) *UserServiceImpl {
+	return &UserServiceImpl{
+		authClient: authClient,
+	}
 }

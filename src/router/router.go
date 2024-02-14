@@ -1,14 +1,14 @@
 package router
 
 import (
+	"github.com/gdsc-ys/fluentify-server/config"
 	"net/http"
 
-	"github.com/gdsc-ys/fluentify-server/src/handler"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 )
 
-func Router() *echo.Echo {
+func Router(init *config.Initialization) *echo.Echo {
 	e := echo.New()
 
 	e.Debug = true
@@ -22,9 +22,9 @@ func Router() *echo.Echo {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
 
-	e.POST("/GetUser", handler.GetUser)
-	e.POST("/UpdateUser", handler.UpdateUser)
-	e.POST("/DeleteUser", handler.DeleteUser)
+	e.POST("/GetUser", init.UserHandler.GetUser)
+	e.POST("/UpdateUser", init.UserHandler.UpdateUser)
+	e.POST("/DeleteUser", init.UserHandler.DeleteUser)
 
 	return e
 }

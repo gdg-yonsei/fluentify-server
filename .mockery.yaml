@@ -1,0 +1,15 @@
+with-expecter: true
+packages:
+  github.com/gdsc-ys/fluentify-server:
+    # place your package-specific config here
+    config:
+      all: true
+      recursive: true
+      dir: "test/mocks/{{.PackagePath}}"
+      filename: "mock_{{.InterfaceName}}.go"
+      outpkg: "{{.PackageName}}_test"
+#    interfaces:
+#      # select the interfaces you want mocked
+#      Foo:
+#        # Modify package-level config for this specific interface (if applicable)
+#        config:
