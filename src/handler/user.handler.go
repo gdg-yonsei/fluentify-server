@@ -31,7 +31,9 @@ func getAuthClient() *auth.Client {
 }
 
 func GetUser(c echo.Context) error {
+	client := getAuthClient()
 	var request = pb.GetUserRequest{}
+
 	if err := c.Bind(&request); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
@@ -40,10 +42,13 @@ func GetUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Id is required")
 	}
 
-	user := service.GetUser(request.Id)
-	userDTO := converter.ConvertUser(user)
+	if user, err := service.GetUser(client, request.Id); err != nil {
+		return c.JSON(http.StatusNotFound, "invalid Id")
+	} else {
+		userDTO := converter.ConvertUser(user)
+		return c.JSON(http.StatusOK, pb.GetUserResponse{User: &userDTO})
+	}
 
-	return c.JSON(http.StatusOK, pb.GetUserResponse{User: &userDTO})
 }
 
 func UpdateUser(c echo.Context) error {

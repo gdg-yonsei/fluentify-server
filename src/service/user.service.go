@@ -7,15 +7,14 @@ import (
 	"github.com/gdsc-ys/fluentify-server/src/model"
 )
 
-func GetUser(id string) model.User {
-	dummyUser := model.User{
-		Id:           "fake",
-		Name:         "fake",
-		Age:          1,
-		DisorderType: model.DISORDER_TYPE_HEARING,
+func GetUser(client *auth.Client, uid string) (model.User, error) {
+	userRecord, err := client.GetUser(context.Background(), uid)
+	if err != nil {
+		return model.User{}, err
 	}
 
-	return dummyUser
+	user := convertRecordToUser(userRecord)
+	return user, nil
 }
 
 func UpdateUser(client *auth.Client, updateUserDTO map[string]interface{}) (model.User, error) {
