@@ -70,7 +70,7 @@ func UpdateUser(c echo.Context) error {
 		userUpdateDTO["age"] = int(request.GetAge())
 
 	case request.GetDisorderType() != 0:
-		userUpdateDTO["disorderType"] = converter.ConvertDisorderType(request.GetDisorderType())
+		userUpdateDTO["disorderType"] = request.GetDisorderType().Number()
 
 	default:
 		return c.JSON(http.StatusBadRequest, "At least one field is required")
