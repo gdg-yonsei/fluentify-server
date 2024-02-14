@@ -10,7 +10,7 @@ import (
 )
 
 func InitializeFirebaseApp() *firebase.App {
-	defaultBucketName := os.Getenv("DEFAULT_STORAGE_BUCKET_NAME")
+	defaultBucketName := os.Getenv("DEFAULT_STORAGE_BUCKET")
 	config := &firebase.Config{
 		StorageBucket: defaultBucketName + ".appspot.com",
 	}
