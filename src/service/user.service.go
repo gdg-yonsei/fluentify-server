@@ -34,7 +34,7 @@ func UpdateUser(client *auth.Client, updateUserDTO map[string]interface{}) (mode
 			}
 			customClaims["age"] = value.(int)
 		case "disorderType":
-			customClaims["disorderType"] = value.(string)
+			customClaims["disorderType"] = value.(int)
 		}
 	}
 	params = params.CustomClaims(customClaims)
@@ -54,7 +54,7 @@ func convertRecordToUser(record *auth.UserRecord) model.User {
 		Id:           record.UID,
 		Name:         record.DisplayName,
 		Age:          record.CustomClaims["age"].(int),
-		DisorderType: model.DISORDER_TYPE_HEARING,
+		DisorderType: record.CustomClaims["disorderType"].(model.DisorderType),
 	}
 
 	return user
