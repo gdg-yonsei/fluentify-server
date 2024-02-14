@@ -48,10 +48,17 @@ func UpdateUser(client *auth.Client, updateUserDTO map[string]interface{}) (mode
 }
 
 func convertRecordToUser(record *auth.UserRecord) model.User {
+	getAge := func() int {
+		if age, ok := record.CustomClaims["age"].(float64); ok {
+			return int(age)
+		}
+		return 0
+	}
+
 	user := model.User{
 		Id:           record.UID,
 		Name:         record.DisplayName,
-		Age:          int(record.CustomClaims["age"].(float64)),
+		Age:          getAge(),
 		DisorderType: 0,
 	}
 
