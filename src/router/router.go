@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gdsc-ys/fluentify-server/src/handler"
+	userMiddleware "github.com/gdsc-ys/fluentify-server/src/middleware"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 )
@@ -23,7 +24,7 @@ func Router() *echo.Echo {
 	})
 
 	e.POST("/GetUser", handler.GetUser)
-	e.POST("/UpdateUser", handler.UpdateUser)
+	e.POST("/UpdateUser", userMiddleware.AuthMiddleware(handler.UpdateUser))
 
 	return e
 }
