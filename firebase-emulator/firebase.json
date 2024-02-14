@@ -6,7 +6,7 @@
       "host": "0.0.0.0"
     },
     "firestore": {
-      "port": 8080,
+      "port": 9080,
       "host": "0.0.0.0"
     },
     "storage": {

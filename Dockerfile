@@ -15,9 +15,8 @@ COPY . .
 COPY --from=buf /build/gen ./gen
 RUN go mod download
 RUN go build -o main .
-WORKDIR /dist
-RUN cp /build/main .
 
 FROM scratch
-COPY --from=builder /dist/main .
-ENTRYPOINT ["/main"]
+WORKDIR /app
+COPY --from=builder /build/main /build/.env /app/
+ENTRYPOINT ["./main"]

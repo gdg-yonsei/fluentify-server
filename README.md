@@ -2,10 +2,21 @@
 
 ## Getting Started
 
+### Setup `.env` file
+```bash
+$ cp .env.example .env
+```
+
 ### Build & run using Docker Compose
 
 ```bash
 docker compose up --build
+```
+
+### To run with local Firebase Emulator
+
+```bash
+docker compose --profile dev up --build
 ```
 
 ### If go is installed locally
