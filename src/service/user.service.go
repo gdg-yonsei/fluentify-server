@@ -7,9 +7,9 @@ import (
 )
 
 type UserService interface {
-	GetUser(id string) (model.User, error)
-	UpdateUser(id string, updateUserDTO map[string]interface{}) (model.User, error)
-	DeleteUser(id string) string
+	GetUser(uid string) (model.User, error)
+	UpdateUser(updateUserDTO map[string]interface{}) (model.User, error)
+	DeleteUser(uid string) error
 }
 
 type UserServiceImpl struct {
@@ -22,7 +22,7 @@ func (service *UserServiceImpl) GetUser(uid string) (model.User, error) {
 		return model.User{}, err
 	}
 
-	user := convertRecordToUser(userRecord)
+	user := service.convertRecordToUser(userRecord)
 	return user, nil
 }
 
@@ -52,11 +52,20 @@ func (service *UserServiceImpl) UpdateUser(updateUserDTO map[string]interface{})
 		return model.User{}, err
 	}
 
-	user := convertRecordToUser(userRecord)
+	user := service.convertRecordToUser(userRecord)
 	return user, nil
 }
 
-func convertRecordToUser(record *auth.UserRecord) model.User {
+func (service *UserServiceImpl) DeleteUser(uid string) error {
+	ctx := context.Background()
+	err := service.authClient.DeleteUser(ctx, uid)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (service *UserServiceImpl) convertRecordToUser(record *auth.UserRecord) model.User {
 	getAge := func() int {
 		if age, ok := record.CustomClaims["age"].(float64); ok {
 			return int(age)
@@ -72,4 +81,10 @@ func convertRecordToUser(record *auth.UserRecord) model.User {
 	}
 
 	return user
+}
+
+func UserServiceInit(authClient *auth.Client) *UserServiceImpl {
+	return &UserServiceImpl{
+		authClient: authClient,
+	}
 }
