@@ -46,7 +46,6 @@ func (m *AuthMiddlewareImpl) checkAuthHeader(authHeader string) error {
 	return nil
 }
 
-
 func AuthMiddlewareInit(authClient *auth.Client) *AuthMiddlewareImpl {
 	return &AuthMiddlewareImpl{
 		authClient: authClient,
