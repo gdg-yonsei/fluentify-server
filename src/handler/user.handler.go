@@ -81,13 +81,12 @@ func (handler *UserHandlerImpl) DeleteUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Id is required")
 	}
 
-	deletedUserId, err := handler.userService.DeleteUser(request.Id)
+	err := handler.userService.DeleteUser(request.Id)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, "invalid id")
-
 	}
 
-	return c.JSON(http.StatusOK, pb.DeleteUserResponse{Id: deletedUserId})
+	return c.JSON(http.StatusOK, pb.DeleteUserResponse{Id: request.Id})
 }
 
 func UserHandlerInit(userService service.UserService) *UserHandlerImpl {

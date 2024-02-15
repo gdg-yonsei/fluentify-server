@@ -10,7 +10,7 @@ import (
 type UserService interface {
 	GetUser(uid string) (model.User, error)
 	UpdateUser(updateUserDTO map[string]interface{}) (model.User, error)
-	DeleteUser(uid string) (string, error)
+	DeleteUser(uid string) error
 }
 
 type UserServiceImpl struct {
@@ -57,13 +57,13 @@ func (service *UserServiceImpl) UpdateUser(updateUserDTO map[string]interface{})
 	return user, nil
 }
 
-func (service *UserServiceImpl) DeleteUser(uid string) (string, error) {
+func (service *UserServiceImpl) DeleteUser(uid string) error {
 	ctx := context.Background()
 	err := service.authClient.DeleteUser(ctx, uid)
 	if err != nil {
-		return "", err
+		return err
 	}
-	return uid, nil
+	return nil
 }
 
 func (service *UserServiceImpl) convertRecordToUser(record *auth.UserRecord) model.User {
