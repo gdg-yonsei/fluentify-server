@@ -30,7 +30,8 @@ func (handler *UserHandlerImpl) GetUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Id is required")
 	}
 
-	if user, err := handler.userService.GetUser(request.Id); err != nil {
+	user, err := handler.userService.GetUser(request.Id)
+	if err != nil {
 		return c.JSON(http.StatusNotFound, "invalid id")
 	}
 	userDTO := converter.ConvertUser(user)
