@@ -49,23 +49,23 @@ func (handler *UserHandlerImpl) UpdateUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Id is required")
 	}
 
-	userUpdateDTO := make(map[string]interface{})
+	userUpdateDTO := map[string]interface{}{"id": request.GetId()}
 
-	switch {
-	case request.GetName() != "":
-		userUpdateDTO["name"] = request.GetName()
+	if name := request.GetName(); name != "" {
+		userUpdateDTO["name"] = name
+	}
+	if age := request.GetAge(); age != 0 {
+		userUpdateDTO["age"] = int(age)
+	}
+	if disorderType := request.GetDisorderType(); disorderType != 0 {
+		userUpdateDTO["disorderType"] = disorderType.Number()
+	}
 
-	case request.GetAge() != 0:
-		userUpdateDTO["age"] = int(request.GetAge())
-
-	case request.GetDisorderType() != 0:
-		userUpdateDTO["disorderType"] = converter.ConvertDisorderType(request.GetDisorderType())
-
-	default:
+	if len(userUpdateDTO) == 0 {
 		return c.JSON(http.StatusBadRequest, "At least one field is required")
 	}
 
-	if user, err := handler.userService.UpdateUser(request.Id, userUpdateDTO); err != nil {
+	if user, err := handler.userService.UpdateUser(userUpdateDTO); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	} else {
 		userDTO := converter.ConvertUser(user)
