@@ -2,13 +2,22 @@ package service
 
 import (
 	"context"
-
 	"firebase.google.com/go/v4/auth"
 	"github.com/gdsc-ys/fluentify-server/src/model"
 )
 
-func GetUser(client *auth.Client, uid string) (model.User, error) {
-	userRecord, err := client.GetUser(context.Background(), uid)
+type UserService interface {
+	GetUser(id string) model.User
+	UpdateUser(id string, updateUserDTO map[string]interface{}) (model.User, error)
+	DeleteUser(id string) string
+}
+
+type UserServiceImpl struct {
+	authClient *auth.Client
+}
+
+func (service *UserServiceImpl) GetUser(uid string) (model.User, error) {
+	userRecord, err := service.authClient.GetUser(context.Background(), uid)
 	if err != nil {
 		return model.User{}, err
 	}
@@ -17,10 +26,10 @@ func GetUser(client *auth.Client, uid string) (model.User, error) {
 	return user, nil
 }
 
-func UpdateUser(client *auth.Client, updateUserDTO map[string]interface{}) (model.User, error) {
+func (service *UserServiceImpl) UpdateUser(updateUserDTO map[string]interface{}) (model.User, error) {
 
 	ctx := context.Background()
-	params := (&auth.UserToUpdate{})
+	params := &auth.UserToUpdate{}
 	customClaims := make(map[string]interface{})
 
 	for field, value := range updateUserDTO {
@@ -38,7 +47,7 @@ func UpdateUser(client *auth.Client, updateUserDTO map[string]interface{}) (mode
 	}
 	params = params.CustomClaims(customClaims)
 
-	userRecord, err := client.UpdateUser(ctx, updateUserDTO["uid"].(string), params)
+	userRecord, err := service.authClient.UpdateUser(ctx, updateUserDTO["uid"].(string), params)
 	if err != nil {
 		return model.User{}, err
 	}

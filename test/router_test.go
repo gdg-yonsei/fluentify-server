@@ -1,6 +1,10 @@
 package router_test
 
 import (
+	"github.com/gdsc-ys/fluentify-server/config"
+	handler_test "github.com/gdsc-ys/fluentify-server/test/mocks/github.com/gdsc-ys/fluentify-server/src/handler"
+	middleware_test "github.com/gdsc-ys/fluentify-server/test/mocks/github.com/gdsc-ys/fluentify-server/src/middleware"
+	service_test "github.com/gdsc-ys/fluentify-server/test/mocks/github.com/gdsc-ys/fluentify-server/src/service"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -10,7 +14,12 @@ import (
 )
 
 func TestRouter(t *testing.T) {
-	e := router.Router()
+	init := &config.Initialization{
+		AuthMiddleware: middleware_test.NewMockAuthMiddleware(t),
+		UserService:    service_test.NewMockUserService(t),
+		UserHandler:    handler_test.NewMockUserHandler(t),
+	}
+	e := router.Router(init)
 
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rec := httptest.NewRecorder()

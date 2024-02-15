@@ -23,5 +23,11 @@ build: proto
 	go mod download
 	go build -o $(GO_BUILD_OUT_DIR)/main .
 
+mock:
+	docker run --rm \
+	--volume $(CURR_DIR):/workspace \
+	--workdir /workspace \
+	vektra/mockery
+
 clean:
 	rm -rf $(GO_BUILD_OUT_DIR)
