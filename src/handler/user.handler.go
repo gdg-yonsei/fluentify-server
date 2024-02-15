@@ -45,11 +45,7 @@ func (handler *UserHandlerImpl) UpdateUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	if request.Id == "" {
-		return c.JSON(http.StatusBadRequest, "Id is required")
-	}
-
-	userUpdateDTO := map[string]interface{}{"id": request.GetId()}
+	userUpdateDTO := map[string]interface{}{}
 
 	if name := request.GetName(); name != "" {
 		userUpdateDTO["name"] = name
@@ -64,6 +60,8 @@ func (handler *UserHandlerImpl) UpdateUser(c echo.Context) error {
 	if len(userUpdateDTO) == 0 {
 		return c.JSON(http.StatusBadRequest, "At least one field is required")
 	}
+
+	userUpdateDTO["uid"] = request.GetId()
 
 	if user, err := handler.userService.UpdateUser(userUpdateDTO); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
@@ -83,7 +81,11 @@ func (handler *UserHandlerImpl) DeleteUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Id is required")
 	}
 
-	deletedUserId := handler.userService.DeleteUser(request.Id)
+	deletedUserId, err := handler.userService.DeleteUser(request.Id)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, "invalid id")
+
+	}
 
 	return c.JSON(http.StatusOK, pb.DeleteUserResponse{Id: deletedUserId})
 }
