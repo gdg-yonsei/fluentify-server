@@ -30,6 +30,7 @@ func (service *UserServiceImpl) GetUser(uid string) (model.User, error) {
 func (service *UserServiceImpl) UpdateUser(updateUserDTO map[string]interface{}) (model.User, error) {
 
 	ctx := context.Background()
+	uid := updateUserDTO["uid"].(string)
 	params := &auth.UserToUpdate{}
 	customClaims := make(map[string]interface{})
 
@@ -48,7 +49,7 @@ func (service *UserServiceImpl) UpdateUser(updateUserDTO map[string]interface{})
 	}
 	params = params.CustomClaims(customClaims)
 
-	userRecord, err := service.authClient.UpdateUser(ctx, updateUserDTO["uid"].(string), params)
+	userRecord, err := service.authClient.UpdateUser(ctx, uid, params)
 	if err != nil {
 		return model.User{}, err
 	}
