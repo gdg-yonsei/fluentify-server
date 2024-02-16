@@ -21,6 +21,7 @@ type UserHandlerImpl struct {
 
 func (handler *UserHandlerImpl) GetUser(c echo.Context) error {
 	var request = pb.GetUserRequest{}
+
 	if err := c.Bind(&request); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
@@ -29,7 +30,10 @@ func (handler *UserHandlerImpl) GetUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Id is required")
 	}
 
-	user := handler.userService.GetUser(request.Id)
+	user, err := handler.userService.GetUser(request.Id)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, "invalid id")
+	}
 	userDTO := converter.ConvertUser(user)
 
 	return c.JSON(http.StatusOK, pb.GetUserResponse{User: &userDTO})
@@ -41,27 +45,25 @@ func (handler *UserHandlerImpl) UpdateUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	if request.Id == "" {
-		return c.JSON(http.StatusBadRequest, "Id is required")
+	userUpdateDTO := map[string]interface{}{}
+
+	if name := request.GetName(); name != "" {
+		userUpdateDTO["name"] = name
+	}
+	if age := request.GetAge(); age != 0 {
+		userUpdateDTO["age"] = int(age)
+	}
+	if disorderType := request.GetDisorderType(); disorderType != 0 {
+		userUpdateDTO["disorderType"] = disorderType.Number()
 	}
 
-	userUpdateDTO := make(map[string]interface{})
-
-	switch {
-	case request.GetName() != "":
-		userUpdateDTO["name"] = request.GetName()
-
-	case request.GetAge() != 0:
-		userUpdateDTO["age"] = int(request.GetAge())
-
-	case request.GetDisorderType() != 0:
-		userUpdateDTO["disorderType"] = converter.ConvertDisorderType(request.GetDisorderType())
-
-	default:
+	if len(userUpdateDTO) == 0 {
 		return c.JSON(http.StatusBadRequest, "At least one field is required")
 	}
 
-	if user, err := handler.userService.UpdateUser(request.Id, userUpdateDTO); err != nil {
+	userUpdateDTO["uid"] = request.GetId()
+
+	if user, err := handler.userService.UpdateUser(userUpdateDTO); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	} else {
 		userDTO := converter.ConvertUser(user)
@@ -79,9 +81,12 @@ func (handler *UserHandlerImpl) DeleteUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Id is required")
 	}
 
-	deletedUserId := handler.userService.DeleteUser(request.Id)
+	err := handler.userService.DeleteUser(request.Id)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, "invalid id")
+	}
 
-	return c.JSON(http.StatusOK, pb.DeleteUserResponse{Id: deletedUserId})
+	return c.JSON(http.StatusOK, pb.DeleteUserResponse{Id: request.Id})
 }
 
 func UserHandlerInit(userService service.UserService) *UserHandlerImpl {

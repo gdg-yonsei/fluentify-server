@@ -1,59 +1,88 @@
 package service
 
 import (
+	"context"
+
 	"firebase.google.com/go/v4/auth"
 	"github.com/gdsc-ys/fluentify-server/src/model"
 )
 
 type UserService interface {
-	GetUser(id string) model.User
-	UpdateUser(id string, updateUserDTO map[string]interface{}) (model.User, error)
-	DeleteUser(id string) string
+	GetUser(uid string) (model.User, error)
+	UpdateUser(updateUserDTO map[string]interface{}) (model.User, error)
+	DeleteUser(uid string) error
 }
 
 type UserServiceImpl struct {
 	authClient *auth.Client
 }
 
-func (service *UserServiceImpl) GetUser(id string) model.User {
-	dummyUser := model.User{
-		Id:           "fake",
-		Name:         "fake",
-		Age:          1,
-		DisorderType: model.DISORDER_TYPE_HEARING,
+func (service *UserServiceImpl) GetUser(uid string) (model.User, error) {
+	userRecord, err := service.authClient.GetUser(context.Background(), uid)
+	if err != nil {
+		return model.User{}, err
 	}
 
-	return dummyUser
+	user := service.convertRecordToUser(userRecord)
+	return user, nil
 }
 
-func (service *UserServiceImpl) UpdateUser(id string, updateUserDTO map[string]interface{}) (model.User, error) {
+func (service *UserServiceImpl) UpdateUser(updateUserDTO map[string]interface{}) (model.User, error) {
 
-	dummyUser := model.User{
-		Id:           "fake",
-		Name:         "fake",
-		Age:          1,
-		DisorderType: model.DISORDER_TYPE_HEARING,
-	}
+	ctx := context.Background()
+	uid := updateUserDTO["uid"].(string)
+	params := &auth.UserToUpdate{}
+	customClaims := make(map[string]interface{})
 
 	for field, value := range updateUserDTO {
 		switch field {
 		case "name":
-			dummyUser.Name = value.(string)
+			params = params.DisplayName(value.(string))
 		case "age":
-			dummyUser.Age = value.(int)
-			if dummyUser.Age < 0 {
-				return dummyUser, &model.UserValidationError{Message: "Age must be greater than 0"}
+			if value.(int) < 0 {
+				return model.User{}, &model.UserValidationError{Message: "Age must be greater than 0"}
 			}
+			customClaims["age"] = value.(int)
 		case "disorderType":
-			dummyUser.DisorderType = value.(model.DisorderType)
+			customClaims["disorderType"] = value.(int)
 		}
 	}
+	params = params.CustomClaims(customClaims)
 
-	return dummyUser, nil
+	userRecord, err := service.authClient.UpdateUser(ctx, uid, params)
+	if err != nil {
+		return model.User{}, err
+	}
+
+	user := service.convertRecordToUser(userRecord)
+	return user, nil
 }
 
-func (service *UserServiceImpl) DeleteUser(id string) string {
-	return id
+func (service *UserServiceImpl) DeleteUser(uid string) error {
+	ctx := context.Background()
+	err := service.authClient.DeleteUser(ctx, uid)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (service *UserServiceImpl) convertRecordToUser(record *auth.UserRecord) model.User {
+	getAge := func() int {
+		if age, ok := record.CustomClaims["age"].(float64); ok {
+			return int(age)
+		}
+		return 0
+	}
+
+	user := model.User{
+		Id:           record.UID,
+		Name:         record.DisplayName,
+		Age:          getAge(),
+		DisorderType: 0,
+	}
+
+	return user
 }
 
 func UserServiceInit(authClient *auth.Client) *UserServiceImpl {
