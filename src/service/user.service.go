@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"log"
+	"net/http"
 
 	"firebase.google.com/go/v4/auth"
 	"github.com/gdsc-ys/fluentify-server/src/model"
@@ -20,7 +22,8 @@ type UserServiceImpl struct {
 func (service *UserServiceImpl) GetUser(uid string) (model.User, error) {
 	userRecord, err := service.authClient.GetUser(context.Background(), uid)
 	if err != nil {
-		return model.User{}, err
+		log.Println(err)
+		return model.User{}, model.NewCustomHTTPError(http.StatusNotFound, "user not found")
 	}
 
 	user := service.convertRecordToUser(userRecord)
@@ -28,7 +31,6 @@ func (service *UserServiceImpl) GetUser(uid string) (model.User, error) {
 }
 
 func (service *UserServiceImpl) UpdateUser(updateUserDTO map[string]interface{}) (model.User, error) {
-
 	ctx := context.Background()
 	uid := updateUserDTO["uid"].(string)
 	params := &auth.UserToUpdate{}
@@ -40,7 +42,7 @@ func (service *UserServiceImpl) UpdateUser(updateUserDTO map[string]interface{})
 			params = params.DisplayName(value.(string))
 		case "age":
 			if value.(int) < 0 {
-				return model.User{}, &model.UserValidationError{Message: "Age must be greater than 0"}
+				return model.User{}, model.NewCustomHTTPError(http.StatusNotFound, "age must be greater than 0")
 			}
 			customClaims["age"] = value.(int)
 		case "disorderType":
@@ -51,7 +53,7 @@ func (service *UserServiceImpl) UpdateUser(updateUserDTO map[string]interface{})
 
 	userRecord, err := service.authClient.UpdateUser(ctx, uid, params)
 	if err != nil {
-		return model.User{}, err
+		return model.User{}, model.NewCustomHTTPError(http.StatusInternalServerError, err)
 	}
 
 	user := service.convertRecordToUser(userRecord)
@@ -62,7 +64,7 @@ func (service *UserServiceImpl) DeleteUser(uid string) error {
 	ctx := context.Background()
 	err := service.authClient.DeleteUser(ctx, uid)
 	if err != nil {
-		return err
+		return model.NewCustomHTTPError(http.StatusInternalServerError, err)
 	}
 	return nil
 }
