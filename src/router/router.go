@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gdsc-ys/fluentify-server/config"
+	"github.com/gdsc-ys/fluentify-server/src/middleware"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -16,6 +17,7 @@ func Router(init *config.Initialization) *echo.Echo {
 	// Middleware
 	e.Use(echoMiddleware.Logger())
 	e.Use(echoMiddleware.Recover())
+	e.HTTPErrorHandler = middleware.CustomHTTPErrorHandler
 
 	// Routes
 	e.GET("/", func(c echo.Context) error {

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/gdsc-ys/fluentify-server/src/model"
 	"net/http"
 
 	pb "github.com/gdsc-ys/fluentify-server/gen/idl/proto"
@@ -23,16 +24,16 @@ func (handler *UserHandlerImpl) GetUser(c echo.Context) error {
 	var request = pb.GetUserRequest{}
 
 	if err := c.Bind(&request); err != nil {
-		return c.JSON(http.StatusBadRequest, err)
+		return model.NewCustomHTTPError(http.StatusBadRequest, err)
 	}
 
 	if request.Id == "" {
-		return c.JSON(http.StatusBadRequest, "Id is required")
+		return model.NewCustomHTTPError(http.StatusBadRequest, "id is required")
 	}
 
 	user, err := handler.userService.GetUser(request.Id)
 	if err != nil {
-		return c.JSON(http.StatusNotFound, "invalid id")
+		return err
 	}
 	userDTO := converter.ConvertUser(user)
 
@@ -42,7 +43,7 @@ func (handler *UserHandlerImpl) GetUser(c echo.Context) error {
 func (handler *UserHandlerImpl) UpdateUser(c echo.Context) error {
 	var request = pb.UpdateUserRequest{}
 	if err := c.Bind(&request); err != nil {
-		return c.JSON(http.StatusBadRequest, err)
+		return model.NewCustomHTTPError(http.StatusBadRequest, err)
 	}
 
 	userUpdateDTO := map[string]interface{}{}
@@ -58,32 +59,32 @@ func (handler *UserHandlerImpl) UpdateUser(c echo.Context) error {
 	}
 
 	if len(userUpdateDTO) == 0 {
-		return c.JSON(http.StatusBadRequest, "At least one field is required")
+		return model.NewCustomHTTPError(http.StatusBadRequest, "at least one field is required")
 	}
 
 	userUpdateDTO["uid"] = request.GetId()
-
-	if user, err := handler.userService.UpdateUser(userUpdateDTO); err != nil {
-		return c.JSON(http.StatusBadRequest, err)
-	} else {
-		userDTO := converter.ConvertUser(user)
-		return c.JSON(http.StatusOK, pb.UpdateUserResponse{User: &userDTO})
+	user, err := handler.userService.UpdateUser(userUpdateDTO)
+	if err != nil {
+		return err
 	}
+
+	userDTO := converter.ConvertUser(user)
+	return c.JSON(http.StatusOK, pb.UpdateUserResponse{User: &userDTO})
 }
 
 func (handler *UserHandlerImpl) DeleteUser(c echo.Context) error {
 	var request = pb.DeleteUserRequest{}
 	if err := c.Bind(&request); err != nil {
-		return c.JSON(http.StatusBadRequest, err)
+		return model.NewCustomHTTPError(http.StatusBadRequest, err)
 	}
 
 	if request.Id == "" {
-		return c.JSON(http.StatusBadRequest, "Id is required")
+		return model.NewCustomHTTPError(http.StatusBadRequest, "id is required")
 	}
 
 	err := handler.userService.DeleteUser(request.Id)
 	if err != nil {
-		return c.JSON(http.StatusNotFound, "invalid id")
+		return err
 	}
 
 	return c.JSON(http.StatusOK, pb.DeleteUserResponse{Id: request.Id})
