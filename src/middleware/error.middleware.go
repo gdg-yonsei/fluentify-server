@@ -27,14 +27,12 @@ func CustomHTTPErrorHandler(err error, c echo.Context) {
 		message = customHTTPError.Message
 	}
 
+	c.Logger().Error(err)
+
 	if c.Request().Method == http.MethodHead { // Issue #608
 		err = c.NoContent(customHTTPError.Code)
 	} else {
 		err = c.JSON(code, convertToErrorDTO(code, message))
-	}
-
-	if err != nil {
-		c.Logger().Error(err)
 	}
 }
 
