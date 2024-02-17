@@ -25,11 +25,3 @@ func NewCustomHTTPError(code int, errorOrMessage interface{}) *CustomHTTPError {
 		Message: message,
 	}
 }
-
-type UserValidationError struct {
-	Message string
-}
-
-func (e *UserValidationError) Error() string {
-	return e.Message
-}
