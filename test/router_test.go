@@ -17,7 +17,10 @@ func TestRouter(t *testing.T) {
 	init := &config.Initialization{
 		AuthMiddleware: middleware_test.NewMockAuthMiddleware(t),
 		UserService:    service_test.NewMockUserService(t),
+		StorageService: service_test.NewMockStorageService(t),
+		TopicService:   service_test.NewMockTopicService(t),
 		UserHandler:    handler_test.NewMockUserHandler(t),
+		TopicHandler:   handler_test.NewMockTopicHandler(t),
 	}
 	e := router.Router(init)
 
