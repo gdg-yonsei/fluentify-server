@@ -4,6 +4,6 @@ type Topic struct {
 	Id           string   `firestore:"-"`
 	Title        string   `firestore:"title"`
 	ThumbnailUrl string   `firestore:"thumbnail_url"`
-	SentenceIds  []string `firestore:"sentence_ids"`
-	SceneIds     []string `firestore:"scene_ids"`
+	SentenceIds  []string `firestore:"-"`
+	SceneIds     []string `firestore:"-"`
 }

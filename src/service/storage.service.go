@@ -90,16 +90,16 @@ func (service *StorageServiceImpl) GetFileUrl(filePath string) (string, error) {
 	}
 
 	object := bucket.Object(filePath)
-	attrs, err := object.Attrs(ctx)
+	attr, err := object.Attrs(ctx)
 	if err != nil {
 		return "", err
 	}
-	parsedName := url.QueryEscape(attrs.Name)
+	parsedName := url.QueryEscape(attr.Name)
 
 	return fmt.Sprintf(
 		"%s/b/%s/o/%s?alt=media",
 		storageApiBaseUri,
-		attrs.Bucket,
+		attr.Bucket,
 		parsedName,
 	), nil
 }

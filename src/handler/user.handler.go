@@ -35,9 +35,9 @@ func (handler *UserHandlerImpl) GetUser(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	userDTO := converter.ConvertUser(user)
+	userDTO := converter.ToUserDTO(user)
 
-	return c.JSON(http.StatusOK, pb.GetUserResponse{User: &userDTO})
+	return c.JSON(http.StatusOK, pb.GetUserResponse{User: userDTO})
 }
 
 func (handler *UserHandlerImpl) UpdateUser(c echo.Context) error {
@@ -65,8 +65,8 @@ func (handler *UserHandlerImpl) UpdateUser(c echo.Context) error {
 		return err
 	}
 
-	userDTO := converter.ConvertUser(user)
-	return c.JSON(http.StatusOK, pb.UpdateUserResponse{User: &userDTO})
+	userDTO := converter.ToUserDTO(user)
+	return c.JSON(http.StatusOK, pb.UpdateUserResponse{User: userDTO})
 }
 
 func (handler *UserHandlerImpl) DeleteUser(c echo.Context) error {

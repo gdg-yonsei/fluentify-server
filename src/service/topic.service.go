@@ -13,8 +13,11 @@ type TopicService interface {
 }
 
 const (
-	topicCollection = "topic"
-	defaultTimeout  = 5 * time.Second
+	topicCollection    = "topic"
+	sentenceCollection = "sentence"
+	sceneCollection    = "scene"
+	topicIdField       = "topic_id"
+	defaultTimeout     = 5 * time.Second
 )
 
 type TopicServiceImpl struct {
@@ -49,22 +52,58 @@ func (service *TopicServiceImpl) GetTopic(id string) (model.Topic, error) {
 
 	topicDoc, err := service.firestoreClient.
 		Collection(topicCollection).
-		Where(firestore.DocumentID, "==", id).Limit(1).
-		Documents(ctx).
-		GetAll()
+		Doc(id).
+		Get(ctx)
 
-	if err != nil || len(topicDoc) != 1 {
+	if err != nil {
 		return model.Topic{}, err
 	}
 
-	singleTopicDoc := topicDoc[0]
 	var topic = model.Topic{}
-	if err := singleTopicDoc.DataTo(&topic); err != nil {
+	if err := topicDoc.DataTo(&topic); err != nil {
 		return model.Topic{}, err
 	}
-	topic.Id = singleTopicDoc.Ref.ID
+	topic.Id = topicDoc.Ref.ID
+
+	sentenceIds, err := service.getSentenceIdsByTopicId(ctx, id)
+	if err != nil {
+		return model.Topic{}, err
+	}
+	topic.SentenceIds = sentenceIds
+
+	sceneIds, err := service.getSceneIdsByTopicId(ctx, id)
+	if err != nil {
+		return model.Topic{}, err
+	}
+	topic.SceneIds = sceneIds
 
 	return topic, nil
+}
+
+func (service *TopicServiceImpl) getSentenceIdsByTopicId(ctx context.Context, topicId string) ([]string, error) {
+	sentenceDocs, err := service.firestoreClient.Collection(sentenceCollection).Where(topicIdField, "==", topicId).Documents(ctx).GetAll()
+	if err != nil {
+		return nil, err
+	}
+	sentenceIds := make([]string, len(sentenceDocs))
+	for i, doc := range sentenceDocs {
+		sentenceIds[i] = doc.Ref.ID
+	}
+
+	return sentenceIds, nil
+}
+
+func (service *TopicServiceImpl) getSceneIdsByTopicId(ctx context.Context, topicId string) ([]string, error) {
+	sceneDocs, err := service.firestoreClient.Collection(sceneCollection).Where(topicIdField, "==", topicId).Documents(ctx).GetAll()
+	if err != nil {
+		return nil, err
+	}
+	sceneIds := make([]string, len(sceneDocs))
+	for i, doc := range sceneDocs {
+		sceneIds[i] = doc.Ref.ID
+	}
+
+	return sceneIds, nil
 }
 
 func TopicServiceInit(firestoreClient *firestore.Client) *TopicServiceImpl {

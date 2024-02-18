@@ -1,7 +1,7 @@
 FROM bufbuild/buf:latest AS buf
 WORKDIR /build
 COPY . .
-RUN buf generate
+RUN buf generate idl/proto
 
 FROM golang:1.21-alpine AS builder
 
