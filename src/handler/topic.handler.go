@@ -45,7 +45,8 @@ func (handler *TopicHandlerImpl) ListTopics(c echo.Context) error {
 		compactTopicDTOs[i] = converter.ToCompactTopicDTO(topic)
 	}
 
-	return c.JSON(http.StatusOK, compactTopicDTOs)
+	response := &pb.ListTopicsResponse{Topics: compactTopicDTOs}
+	return c.JSON(http.StatusOK, response)
 }
 
 func (handler *TopicHandlerImpl) GetTopic(c echo.Context) error {
@@ -68,7 +69,8 @@ func (handler *TopicHandlerImpl) GetTopic(c echo.Context) error {
 	}
 	topic.ThumbnailUrl = thumbnailURL
 
-	return c.JSON(http.StatusOK, converter.ToTopicDTO(topic))
+	response := &pb.GetTopicResponse{Topic: converter.ToTopicDTO(topic)}
+	return c.JSON(http.StatusOK, response)
 }
 
 func TopicHandlerInit(topicService service.TopicService, storageService service.StorageService) *TopicHandlerImpl {
