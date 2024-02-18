@@ -3,8 +3,8 @@ package service
 import (
 	"cloud.google.com/go/firestore"
 	"context"
+	"github.com/gdsc-ys/fluentify-server/src/constant"
 	"github.com/gdsc-ys/fluentify-server/src/model"
-	"time"
 )
 
 type TopicService interface {
@@ -12,23 +12,15 @@ type TopicService interface {
 	GetTopic(id string) (model.Topic, error)
 }
 
-const (
-	topicCollection    = "topic"
-	sentenceCollection = "sentence"
-	sceneCollection    = "scene"
-	topicIdField       = "topic_id"
-	defaultTimeout     = 5 * time.Second
-)
-
 type TopicServiceImpl struct {
 	firestoreClient *firestore.Client
 }
 
 func (service *TopicServiceImpl) ListTopics() ([]model.Topic, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), constant.FirestoreDefaultTimeout)
 	defer cancel()
 
-	topicDocs, err := service.firestoreClient.Collection(topicCollection).Documents(ctx).GetAll()
+	topicDocs, err := service.firestoreClient.Collection(constant.TopicCollection).Documents(ctx).GetAll()
 	if err != nil || len(topicDocs) == 0 {
 		return nil, err
 	}
@@ -47,11 +39,11 @@ func (service *TopicServiceImpl) ListTopics() ([]model.Topic, error) {
 }
 
 func (service *TopicServiceImpl) GetTopic(id string) (model.Topic, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), constant.FirestoreDefaultTimeout)
 	defer cancel()
 
 	topicDoc, err := service.firestoreClient.
-		Collection(topicCollection).
+		Collection(constant.TopicCollection).
 		Doc(id).
 		Get(ctx)
 
@@ -81,7 +73,11 @@ func (service *TopicServiceImpl) GetTopic(id string) (model.Topic, error) {
 }
 
 func (service *TopicServiceImpl) getSentenceIdsByTopicId(ctx context.Context, topicId string) ([]string, error) {
-	sentenceDocs, err := service.firestoreClient.Collection(sentenceCollection).Where(topicIdField, "==", topicId).Documents(ctx).GetAll()
+	sentenceDocs, err := service.firestoreClient.
+		Collection(constant.SentenceCollection).
+		Where(constant.TopicIdField, "==", topicId).
+		Documents(ctx).GetAll()
+
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +90,11 @@ func (service *TopicServiceImpl) getSentenceIdsByTopicId(ctx context.Context, to
 }
 
 func (service *TopicServiceImpl) getSceneIdsByTopicId(ctx context.Context, topicId string) ([]string, error) {
-	sceneDocs, err := service.firestoreClient.Collection(sceneCollection).Where(topicIdField, "==", topicId).Documents(ctx).GetAll()
+	sceneDocs, err := service.firestoreClient.
+		Collection(constant.SceneCollection).
+		Where(constant.TopicIdField, "==", topicId).
+		Documents(ctx).GetAll()
+
 	if err != nil {
 		return nil, err
 	}

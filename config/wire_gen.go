@@ -24,9 +24,13 @@ func Init() *Initialization {
 	storageServiceImpl := service.StorageServiceInit(storageClient)
 	firestoreClient := NewFireStoreClient(app)
 	topicServiceImpl := service.TopicServiceInit(firestoreClient)
+	sentenceServiceImpl := service.SentenceServiceInit(firestoreClient)
+	sceneServiceImpl := service.SceneServiceInit(firestoreClient)
 	userHandlerImpl := handler.UserHandlerInit(userServiceImpl)
 	topicHandlerImpl := handler.TopicHandlerInit(topicServiceImpl, storageServiceImpl)
-	initialization := NewInitialization(authMiddlewareImpl, userServiceImpl, storageServiceImpl, topicServiceImpl, userHandlerImpl, topicHandlerImpl)
+	sentenceHandlerImpl := handler.SentenceHandlerInit(sentenceServiceImpl)
+	sceneHandlerImpl := handler.SceneHandlerInit(sceneServiceImpl, storageServiceImpl)
+	initialization := NewInitialization(authMiddlewareImpl, userServiceImpl, storageServiceImpl, topicServiceImpl, sentenceServiceImpl, sceneServiceImpl, userHandlerImpl, topicHandlerImpl, sentenceHandlerImpl, sceneHandlerImpl)
 	return initialization
 }
 
@@ -48,6 +52,14 @@ var storageServiceSet = wire.NewSet(service.StorageServiceInit, wire.Bind(new(se
 
 var topicServiceSet = wire.NewSet(service.TopicServiceInit, wire.Bind(new(service.TopicService), new(*service.TopicServiceImpl)))
 
+var sentenceServiceSet = wire.NewSet(service.SentenceServiceInit, wire.Bind(new(service.SentenceService), new(*service.SentenceServiceImpl)))
+
+var sceneServiceSet = wire.NewSet(service.SceneServiceInit, wire.Bind(new(service.SceneService), new(*service.SceneServiceImpl)))
+
 var userHandlerSet = wire.NewSet(handler.UserHandlerInit, wire.Bind(new(handler.UserHandler), new(*handler.UserHandlerImpl)))
 
 var topicHandlerSet = wire.NewSet(handler.TopicHandlerInit, wire.Bind(new(handler.TopicHandler), new(*handler.TopicHandlerImpl)))
+
+var sentenceHandlerSet = wire.NewSet(handler.SentenceHandlerInit, wire.Bind(new(handler.SentenceHandler), new(*handler.SentenceHandlerImpl)))
+
+var sceneHandlerSet = wire.NewSet(handler.SceneHandlerInit, wire.Bind(new(handler.SceneHandler), new(*handler.SceneHandlerImpl)))

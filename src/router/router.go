@@ -31,5 +31,8 @@ func Router(init *config.Initialization) *echo.Echo {
 	e.POST("/ListTopics", init.TopicHandler.ListTopics)
 	e.POST("/GetTopic", init.TopicHandler.GetTopic)
 
+	e.POST("/GetSentence", init.SentenceHandler.GetSentence)
+	e.POST("/GetScene", init.SceneHandler.GetScene)
+
 	return e
 }
