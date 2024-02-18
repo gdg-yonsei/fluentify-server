@@ -18,7 +18,7 @@ type SentenceHandlerImpl struct {
 }
 
 func (handler *SentenceHandlerImpl) GetSentence(c echo.Context) error {
-	var request = pb.GetSetenceRequest{}
+	var request = pb.GetSentenceRequest{}
 	if err := c.Bind(&request); err != nil {
 		return model.NewCustomHTTPError(http.StatusBadRequest, err)
 	}
@@ -31,7 +31,8 @@ func (handler *SentenceHandlerImpl) GetSentence(c echo.Context) error {
 		return model.NewCustomHTTPError(http.StatusInternalServerError, err)
 	}
 
-	return c.JSON(http.StatusOK, converter.ToSentenceDTO(sentence))
+	response := &pb.GetSentenceResponse{Sentence: converter.ToSentenceDTO(sentence)}
+	return c.JSON(http.StatusOK, response)
 }
 
 func SentenceHandlerInit(sentenceService service.SentenceService) *SentenceHandlerImpl {

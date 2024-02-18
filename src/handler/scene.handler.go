@@ -38,7 +38,8 @@ func (handler *SceneHandlerImpl) GetScene(c echo.Context) error {
 	}
 	scene.ImageUrl = thumbnailURL
 
-	return c.JSON(http.StatusOK, converter.ToSceneDTO(scene))
+	response := &pb.GetSceneResponse{Scene: converter.ToSceneDTO(scene)}
+	return c.JSON(http.StatusOK, response)
 }
 
 func SceneHandlerInit(sceneService service.SceneService, storageService service.StorageService) *SceneHandlerImpl {
