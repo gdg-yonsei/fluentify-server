@@ -5,10 +5,10 @@ import (
 	"context"
 	"firebase.google.com/go/v4/storage"
 	"fmt"
+	"github.com/gdsc-ys/fluentify-server/src/constant"
 	"github.com/google/uuid"
 	"io"
 	"net/url"
-	"time"
 )
 
 type StorageService interface {
@@ -21,15 +21,8 @@ type StorageServiceImpl struct {
 	storageClient *storage.Client
 }
 
-const (
-	storageApiBaseUri      = "https://firebasestorage.googleapis.com/v0"
-	publicPath             = "public/"
-	privatePath            = "private/"
-	defaultTransferTimeout = 5 * time.Second
-)
-
 func (service *StorageServiceImpl) UploadFile(file []byte, userId string) (string, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), defaultTransferTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), constant.StorageDefaultTimeout)
 	defer cancel()
 
 	bucket, err := service.storageClient.DefaultBucket()
@@ -38,7 +31,7 @@ func (service *StorageServiceImpl) UploadFile(file []byte, userId string) (strin
 	}
 
 	fileName := uuid.New().String()
-	path := privatePath + userId + "/" + fileName
+	path := fmt.Sprintf("%s%s/%s", constant.PublicBucketPath, userId, fileName)
 	object := bucket.Object(path)
 	writer := object.NewWriter(ctx)
 	//Set the attribute
@@ -57,7 +50,7 @@ func (service *StorageServiceImpl) UploadFile(file []byte, userId string) (strin
 }
 
 func (service *StorageServiceImpl) GetFile(filePath string) ([]byte, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), defaultTransferTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), constant.StorageDefaultTimeout)
 	defer cancel()
 
 	bucket, err := service.storageClient.DefaultBucket()
@@ -81,7 +74,7 @@ func (service *StorageServiceImpl) GetFile(filePath string) ([]byte, error) {
 }
 
 func (service *StorageServiceImpl) GetFileUrl(filePath string) (string, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), defaultTransferTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), constant.StorageDefaultTimeout)
 	defer cancel()
 
 	bucket, err := service.storageClient.DefaultBucket()
@@ -98,7 +91,7 @@ func (service *StorageServiceImpl) GetFileUrl(filePath string) (string, error) {
 
 	return fmt.Sprintf(
 		"%s/b/%s/o/%s?alt=media",
-		storageApiBaseUri,
+		constant.StorageApiBaseUri,
 		attr.Bucket,
 		parsedName,
 	), nil

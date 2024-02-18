@@ -18,8 +18,12 @@ var authMiddlewareSet = wire.NewSet(middleware.AuthMiddlewareInit, wire.Bind(new
 var userServiceSet = wire.NewSet(service.UserServiceInit, wire.Bind(new(service.UserService), new(*service.UserServiceImpl)))
 var storageServiceSet = wire.NewSet(service.StorageServiceInit, wire.Bind(new(service.StorageService), new(*service.StorageServiceImpl)))
 var topicServiceSet = wire.NewSet(service.TopicServiceInit, wire.Bind(new(service.TopicService), new(*service.TopicServiceImpl)))
+var sentenceServiceSet = wire.NewSet(service.SentenceServiceInit, wire.Bind(new(service.SentenceService), new(*service.SentenceServiceImpl)))
+var sceneServiceSet = wire.NewSet(service.SceneServiceInit, wire.Bind(new(service.SceneService), new(*service.SceneServiceImpl)))
 var userHandlerSet = wire.NewSet(handler.UserHandlerInit, wire.Bind(new(handler.UserHandler), new(*handler.UserHandlerImpl)))
 var topicHandlerSet = wire.NewSet(handler.TopicHandlerInit, wire.Bind(new(handler.TopicHandler), new(*handler.TopicHandlerImpl)))
+var sentenceHandlerSet = wire.NewSet(handler.SentenceHandlerInit, wire.Bind(new(handler.SentenceHandler), new(*handler.SentenceHandlerImpl)))
+var sceneHandlerSet = wire.NewSet(handler.SceneHandlerInit, wire.Bind(new(handler.SceneHandler), new(*handler.SceneHandlerImpl)))
 
 func Init() *Initialization {
 	wire.Build(
@@ -32,8 +36,12 @@ func Init() *Initialization {
 		userServiceSet,
 		storageServiceSet,
 		topicServiceSet,
+		sentenceServiceSet,
+		sceneServiceSet,
 		userHandlerSet,
 		topicHandlerSet,
+		sentenceHandlerSet,
+		sceneHandlerSet,
 	)
 	return nil
 }
