@@ -11,20 +11,26 @@ type Initialization struct {
 
 	UserService    service.UserService
 	StorageService service.StorageService
+	TopicService   service.TopicService
 
-	UserHandler handler.UserHandler
+	UserHandler  handler.UserHandler
+	TopicHandler handler.TopicHandler
 }
 
 func NewInitialization(
 	authMiddleware middleware.AuthMiddleware,
-	storageService service.StorageService,
 	userService service.UserService,
+	storageService service.StorageService,
+	topicService service.TopicService,
 	userHandler handler.UserHandler,
+	topicHandler handler.TopicHandler,
 ) *Initialization {
 	return &Initialization{
 		AuthMiddleware: authMiddleware,
-		StorageService: storageService,
 		UserService:    userService,
+		StorageService: storageService,
+		TopicService:   topicService,
 		UserHandler:    userHandler,
+		TopicHandler:   topicHandler,
 	}
 }

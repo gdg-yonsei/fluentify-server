@@ -1,0 +1,19 @@
+{
+  "name": "public/example.jpeg",
+  "bucket": "fluentify-test.appspot.com",
+  "metageneration": 1,
+  "generation": 1708187699302,
+  "contentType": "image/jpeg",
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "downloadTokens": [
+    "cc581e6f-548a-4f08-813a-7837ae4f0119"
+  ],
+  "etag": "3FMp5KAGMiKMSNMwxV0Vzh2xdc4",
+  "customMetadata": {},
+  "timeCreated": "2024-02-17T16:34:59.302Z",
+  "updated": "2024-02-17T16:34:59.302Z",
+  "size": 45927,
+  "md5Hash": "N6UgB/pYz1ePOCCZT1mvEg==",
+  "crc32c": "1755235467"
+}

@@ -45,8 +45,6 @@ func (service *UserServiceImpl) UpdateUser(updateUserDTO map[string]interface{})
 				return model.User{}, model.NewCustomHTTPError(http.StatusNotFound, "age must be greater than 0")
 			}
 			customClaims["age"] = value.(int)
-		case "disorderType":
-			customClaims["disorderType"] = value.(int)
 		}
 	}
 	params = params.CustomClaims(customClaims)
@@ -78,10 +76,9 @@ func (service *UserServiceImpl) convertRecordToUser(record *auth.UserRecord) mod
 	}
 
 	user := model.User{
-		Id:           record.UID,
-		Name:         record.DisplayName,
-		Age:          getAge(),
-		DisorderType: 0,
+		Id:   record.UID,
+		Name: record.DisplayName,
+		Age:  getAge(),
 	}
 
 	return user

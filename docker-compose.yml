@@ -25,4 +25,4 @@ services:
       - '4000:4000'
     volumes:
       - './firebase-emulator:/firebase-emulator'
-    command: 'firebase emulators:start --project fluentify-test'
+    command: 'firebase emulators:start --project fluentify-test --import /firebase-emulator/seed --export-on-exit /firebase-emulator/seed'

@@ -4,7 +4,7 @@ import (
 	"github.com/gdsc-ys/fluentify-server/src/model"
 	"net/http"
 
-	pb "github.com/gdsc-ys/fluentify-server/gen/idl/proto"
+	pb "github.com/gdsc-ys/fluentify-server/gen/proto"
 	"github.com/gdsc-ys/fluentify-server/src/converter"
 	"github.com/gdsc-ys/fluentify-server/src/service"
 	"github.com/labstack/echo/v4"
@@ -35,9 +35,9 @@ func (handler *UserHandlerImpl) GetUser(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	userDTO := converter.ConvertUser(user)
+	userDTO := converter.ToUserDTO(user)
 
-	return c.JSON(http.StatusOK, pb.GetUserResponse{User: &userDTO})
+	return c.JSON(http.StatusOK, pb.GetUserResponse{User: userDTO})
 }
 
 func (handler *UserHandlerImpl) UpdateUser(c echo.Context) error {
@@ -54,9 +54,6 @@ func (handler *UserHandlerImpl) UpdateUser(c echo.Context) error {
 	if age := request.GetAge(); age != 0 {
 		userUpdateDTO["age"] = int(age)
 	}
-	if disorderType := request.GetDisorderType(); disorderType != 0 {
-		userUpdateDTO["disorderType"] = disorderType.Number()
-	}
 
 	if len(userUpdateDTO) == 0 {
 		return model.NewCustomHTTPError(http.StatusBadRequest, "at least one field is required")
@@ -68,8 +65,8 @@ func (handler *UserHandlerImpl) UpdateUser(c echo.Context) error {
 		return err
 	}
 
-	userDTO := converter.ConvertUser(user)
-	return c.JSON(http.StatusOK, pb.UpdateUserResponse{User: &userDTO})
+	userDTO := converter.ToUserDTO(user)
+	return c.JSON(http.StatusOK, pb.UpdateUserResponse{User: userDTO})
 }
 
 func (handler *UserHandlerImpl) DeleteUser(c echo.Context) error {

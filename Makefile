@@ -2,7 +2,7 @@
 PROTO_DIR = idl/proto
 
 # Define the output directory in which to place the build results.
-PROTO_GEN_DIR = gen
+PROTO_GEN_DIR = gen/proto
 
 CURR_DIR = $(PWD)
 
@@ -10,7 +10,7 @@ proto:
 	docker run --rm \
 	--volume $(CURR_DIR):/workspace \
 	--workdir /workspace \
-	bufbuild/buf generate
+	bufbuild/buf generate $(PROTO_DIR)
 
 GO111MODULE = on
 CGO_ENABLED = 0
@@ -31,3 +31,4 @@ mock:
 
 clean:
 	rm -rf $(GO_BUILD_OUT_DIR)
+	#rm -rf $(PROTO_GEN_DIR)

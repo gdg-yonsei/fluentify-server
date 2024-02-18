@@ -1,6 +1,7 @@
 package config
 
 import (
+	"cloud.google.com/go/firestore"
 	"context"
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/auth"
@@ -39,4 +40,13 @@ func NewFirebaseStorageClient(app *firebase.App) *storage.Client {
 	}
 
 	return storageClient
+}
+
+func NewFireStoreClient(app *firebase.App) *firestore.Client {
+	firestoreClient, err := app.Firestore(context.Background())
+	if err != nil {
+		log.Fatalf("error getting firestore client: %v", err)
+	}
+
+	return firestoreClient
 }

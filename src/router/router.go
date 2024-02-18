@@ -28,5 +28,8 @@ func Router(init *config.Initialization) *echo.Echo {
 	e.POST("/UpdateUser", init.UserHandler.UpdateUser)
 	e.POST("/DeleteUser", init.UserHandler.DeleteUser)
 
+	e.POST("/ListTopics", init.TopicHandler.ListTopics)
+	e.POST("/GetTopic", init.TopicHandler.GetTopic)
+
 	return e
 }
