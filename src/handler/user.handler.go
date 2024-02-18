@@ -4,7 +4,7 @@ import (
 	"github.com/gdsc-ys/fluentify-server/src/model"
 	"net/http"
 
-	pb "github.com/gdsc-ys/fluentify-server/gen/idl/proto"
+	pb "github.com/gdsc-ys/fluentify-server/gen/proto"
 	"github.com/gdsc-ys/fluentify-server/src/converter"
 	"github.com/gdsc-ys/fluentify-server/src/service"
 	"github.com/labstack/echo/v4"
@@ -53,9 +53,6 @@ func (handler *UserHandlerImpl) UpdateUser(c echo.Context) error {
 	}
 	if age := request.GetAge(); age != 0 {
 		userUpdateDTO["age"] = int(age)
-	}
-	if disorderType := request.GetDisorderType(); disorderType != 0 {
-		userUpdateDTO["disorderType"] = disorderType.Number()
 	}
 
 	if len(userUpdateDTO) == 0 {

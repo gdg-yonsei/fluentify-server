@@ -5,4 +5,5 @@ managed:
     default: "."
 plugins:
   - plugin: buf.build/protocolbuffers/go:v1.31.0
-    out: gen
+    out: gen/proto
+    opt: paths=source_relative
