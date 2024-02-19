@@ -25,6 +25,7 @@ func TestRouter(t *testing.T) {
 		TopicHandler:    handler_test.NewMockTopicHandler(t),
 		SentenceHandler: handler_test.NewMockSentenceHandler(t),
 		SceneHandler:    handler_test.NewMockSceneHandler(t),
+		FeedbackHandler: handler_test.NewMockFeedbackHandler(t),
 	}
 	e := router.Router(init)
 
