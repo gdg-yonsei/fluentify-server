@@ -31,7 +31,7 @@ func (handler *FeedbackHandlerImpl) GetPronunciationFeedback(c echo.Context) err
 		return model.NewCustomHTTPError(http.StatusBadRequest, err)
 	}
 
-	hardCodedAudioFile := "example.m4a"
+	hardCodedAudioFile := "example1.m4a"
 	if !existsFile(constant.SharedAudioPath + hardCodedAudioFile) {
 		bucketPath := "audio/" + hardCodedAudioFile
 		bytes, err := handler.storageService.GetFile(bucketPath)
@@ -65,7 +65,7 @@ func (handler *FeedbackHandlerImpl) GetPronunciationFeedback(c echo.Context) err
 
 	grpcRequest := pb.PronunciationFeedbackRequest{
 		Sentence:  "It's autumn now, and the leaves are turning beautiful colors.",
-		AudioPath: "example.m4a",
+		AudioPath: hardCodedAudioFile,
 		Tip:       "Say 'aw-tum,' not 'ay-tum.'",
 	}
 
@@ -99,7 +99,7 @@ func (handler *FeedbackHandlerImpl) GetCommunicationFeedback(c echo.Context) err
 		return model.NewCustomHTTPError(http.StatusBadRequest, err)
 	}
 
-	hardCodedAudioFile := "example.m4a"
+	hardCodedAudioFile := "example1.m4a"
 	if !existsFile(constant.SharedAudioPath + hardCodedAudioFile) {
 		bucketPath := "audio/" + hardCodedAudioFile
 		bytes, err := handler.storageService.GetFile(bucketPath)
@@ -137,7 +137,7 @@ func (handler *FeedbackHandlerImpl) GetCommunicationFeedback(c echo.Context) err
 		Context:        "Let's imagine that you are a brave captain of a big ship. You are sailing on the high seas. Suddenly, you see a beautiful sunset. Look at this picture and tell me...",
 		Question:       "What colors can you see in the sky?",
 		ExpectedAnswer: "I can see red, orange, and yellow.",
-		AudioPath:      "example.m4a",
+		AudioPath:      "example1.m4a",
 		ImgPath:        "img/1070.jpg",
 	}
 

@@ -14,7 +14,7 @@ class PronunciationFeedbackService(internal_pb2_grpc.PronunciationFeedbackServic
     def PronunciationFeedback(self, request, context):
         pro_input = {
             "user-audio": request.audio_path,
-            "practice-sentence": request.practice_sentence,
+            "practice-sentence": request.sentence,
             "tip": request.tip
         }
         feedback = self.ft.ProFeedback(pro_input)
