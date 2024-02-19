@@ -3,8 +3,10 @@ package middleware
 import (
 	"context"
 	"firebase.google.com/go/v4/auth"
+	"github.com/gdsc-ys/fluentify-server/src/model"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"strings"
 )
 
 type AuthMiddleware interface {
@@ -20,13 +22,14 @@ func (m *AuthMiddlewareImpl) Verify() echo.MiddlewareFunc {
 		return func(c echo.Context) error {
 			authHeader := c.Request().Header.Get("Authorization")
 			if err := m.checkAuthHeader(authHeader); err != nil {
-				return c.String(err.(*echo.HTTPError).Code, err.Error())
+				return err
 			}
-			idToken := authHeader[len("Bearer "):]
+			splitToken := strings.Split(authHeader, "Bearer ")
+			idToken := splitToken[1]
 
 			token, err := m.authClient.VerifyIDToken(context.Background(), idToken)
 			if err != nil {
-				return c.String(http.StatusUnauthorized, "Invalid token")
+				return model.NewCustomHTTPError(http.StatusUnauthorized, "Invalid token")
 			}
 
 			c.Set("uid", token.UID)
@@ -38,10 +41,10 @@ func (m *AuthMiddlewareImpl) Verify() echo.MiddlewareFunc {
 
 func (m *AuthMiddlewareImpl) checkAuthHeader(authHeader string) error {
 	if authHeader == "" {
-		return echo.NewHTTPError(http.StatusUnauthorized, "Authorization header needed")
+		return model.NewCustomHTTPError(http.StatusUnauthorized, "Authorization header needed")
 	}
 	if len(authHeader) <= len("Bearer ") {
-		return echo.NewHTTPError(http.StatusUnauthorized, "Invalid token")
+		return model.NewCustomHTTPError(http.StatusUnauthorized, "Invalid token")
 	}
 	return nil
 }
