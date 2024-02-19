@@ -5,6 +5,7 @@ import (
 	handler_test "github.com/gdsc-ys/fluentify-server/test/mocks/github.com/gdsc-ys/fluentify-server/src/handler"
 	middleware_test "github.com/gdsc-ys/fluentify-server/test/mocks/github.com/gdsc-ys/fluentify-server/src/middleware"
 	service_test "github.com/gdsc-ys/fluentify-server/test/mocks/github.com/gdsc-ys/fluentify-server/src/service"
+	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -26,6 +27,8 @@ func TestRouter(t *testing.T) {
 		SentenceHandler: handler_test.NewMockSentenceHandler(t),
 		SceneHandler:    handler_test.NewMockSceneHandler(t),
 	}
+	authMock := init.AuthMiddleware.(*middleware_test.MockAuthMiddleware)
+	authMock.On("Verify").Return(echoMiddleware.Logger())
 	e := router.Router(init)
 
 	req := httptest.NewRequest(http.MethodGet, "/", nil)

@@ -31,9 +31,9 @@ func Router(init *config.Initialization) *echo.Echo {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
 
-	e.POST("/GetUser", init.UserHandler.GetUser)
-	e.POST("/UpdateUser", init.UserHandler.UpdateUser)
-	e.POST("/DeleteUser", init.UserHandler.DeleteUser)
+	e.POST("/GetUser", init.UserHandler.GetUser, init.AuthMiddleware.Verify())
+	e.POST("/UpdateUser", init.UserHandler.UpdateUser, init.AuthMiddleware.Verify())
+	e.POST("/DeleteUser", init.UserHandler.DeleteUser, init.AuthMiddleware.Verify())
 
 	e.POST("/ListTopics", init.TopicHandler.ListTopics)
 	e.POST("/GetTopic", init.TopicHandler.GetTopic)
