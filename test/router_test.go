@@ -26,6 +26,7 @@ func TestRouter(t *testing.T) {
 		TopicHandler:    handler_test.NewMockTopicHandler(t),
 		SentenceHandler: handler_test.NewMockSentenceHandler(t),
 		SceneHandler:    handler_test.NewMockSceneHandler(t),
+		FeedbackHandler: handler_test.NewMockFeedbackHandler(t),
 	}
 	authMock := init.AuthMiddleware.(*middleware_test.MockAuthMiddleware)
 	authMock.On("Verify").Return(echoMiddleware.Logger())

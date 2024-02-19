@@ -9,8 +9,12 @@ COPY ./idl/proto/internal.proto .
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
+RUN apt-get -y install curl
+RUN apt-get -y install ffmpeg
+
 RUN python -m grpc_tools.protoc -I. --python_out=. --pyi_out=. --grpc_python_out=. internal.proto
 
 # Run server.py when the container launches
 ENTRYPOINT ["python"]
-CMD ["server.py"]
+CMD ["/python-app/server.py"]

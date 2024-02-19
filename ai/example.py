@@ -1,14 +1,11 @@
 from fluentify import Fluentify
 
-
-
 if __name__ == "__main__":
-
     ft = Fluentify()
-    
+
     ## Sample Input ##
-    con_input =  {
-        "user-answer": "Hmm.. a ship? maybe yellow? I may no",
+    com_input = {
+        "user-audio": "example1.m4a",
         "context": "Let's imagine that you are a brave captain of a big ship. You are sailing on the high seas. Suddenly, you see a beautiful sunset. Look at this picture and tell me...",
         "question": "What colors can you see in the sky?",
         "answer": "I see red, orange, yellow, and blue.",
@@ -16,18 +13,17 @@ if __name__ == "__main__":
     }
 
     pro_input = {
-        "user-audio" : "example1.m4a",
-        "practice-sentece": "It's autumn now, and the leaves are turning beautiful colors.",
+        "user-audio": "example1.m4a",
+        "practice-sentence": "It's autumn now, and the leaves are turning beautiful colors.",
         "tip": "Say 'aw-tum,' not 'ay-tum.'"
     }
 
     ## Feedback ##
-    con_feedback  = ft.ConFeedback(con_input)
+    com_feedback = ft.ComFeedback(com_input)
     pro_feedback = ft.ProFeedback(pro_input)
 
-
     ## Sample Output ##
-    print("** Feedback for Contextual Task: ", con_feedback)
+    print("** Feedback for Contextual Task: ", com_feedback)
     # {'positive-feedback': 'You are very creative! I like your imagination.', 
     #  'negative-feedback': "Let's try to describe what we see in the picture. First, look at the sky. What colors can you see there?",
     #   'enhanced-answer': 'In the sky, I can see yellow, orange, pink, and blue.'}
@@ -40,9 +36,3 @@ if __name__ == "__main__":
     #   'speech_rate': 2.347417840375587, 
     #   'positive-feedback': 'Pronunciation is correct. Keep up the good work!', 
     #   'negative-feedback': ' '}
-
-    
-    
-    
-    
-        

@@ -24,6 +24,7 @@ var userHandlerSet = wire.NewSet(handler.UserHandlerInit, wire.Bind(new(handler.
 var topicHandlerSet = wire.NewSet(handler.TopicHandlerInit, wire.Bind(new(handler.TopicHandler), new(*handler.TopicHandlerImpl)))
 var sentenceHandlerSet = wire.NewSet(handler.SentenceHandlerInit, wire.Bind(new(handler.SentenceHandler), new(*handler.SentenceHandlerImpl)))
 var sceneHandlerSet = wire.NewSet(handler.SceneHandlerInit, wire.Bind(new(handler.SceneHandler), new(*handler.SceneHandlerImpl)))
+var feedbackHandlerSet = wire.NewSet(handler.FeedbackHandlerInit, wire.Bind(new(handler.FeedbackHandler), new(*handler.FeedbackHandlerImpl)))
 
 func Init() *Initialization {
 	wire.Build(
@@ -42,6 +43,7 @@ func Init() *Initialization {
 		topicHandlerSet,
 		sentenceHandlerSet,
 		sceneHandlerSet,
+		feedbackHandlerSet,
 	)
 	return nil
 }

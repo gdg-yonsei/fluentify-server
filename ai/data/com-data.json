@@ -1,0 +1,20 @@
+[
+    {
+        "question": "What is the doctor doing?",
+        "answer": "The doctor is listening to the girl's heart.",
+        "img": "hospital-00.jpg",
+        "topic": "hospital"
+    },
+    {
+        "question": "What is the little girl doing?",
+        "answer": "She is eating chicken.",
+        "img": "home-00.jpg",
+        "topic": "home"
+    },
+    {
+        "question": "What is the girl doing?",
+        "answer": "The girl is raising her hand in class.",
+        "img": "school-00.jpg",
+        "topic": "school"
+    }
+]

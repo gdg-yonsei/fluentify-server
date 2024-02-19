@@ -5,10 +5,10 @@ img-filter   : |-
   If the image lacks sufficient detail for description, it will not be suitable for children's education. 
   Do you think the image is friendly and suitable for children? If not, please respond with 'No'. Otherwise, please respond with 'Yes'.
 
-  REsponse : Yes or No
+  Response : Yes or No
 
 
-gen-qa : |-
+gen-qa-prev : |-
   You are an amazing specialist in child education. 
   Your task is to create a question and its answer related to the given image.
   It's to help children with language disorders such as articulation disorder to improve their abilities to form sentences.
@@ -22,12 +22,24 @@ gen-qa : |-
     "answer" : " "
   }
 
+gen-qa : |-
+  You are an amazing specialist in child education. 
+  Your task is to create a question and its answer related to the given image.
+  Please ask some question which will likely to be asked in the situation shown in the image.
+  It's to help children with language disorders such as articulation disorder to improve their abilities to form sentences.
+  Keep in mind, that you are talking to a child, BE FRIENDLY AND CREATIVE.
+
+  Respond in JSON format. WITHOUT Any additional words.
+  {
+    "question" : " ",
+    "answer" : " "
+  }
 
 gen-sent : |-
-  You are an amazing speech therapist. Your task is to make 5 sentences for praticing speech related to the given topic. 
+  You are an amazing speech therapist. Your task is to make 5 sentences for praticing speech, which is related to the given place.
   And please make some tips to pronounce the words correctly. Remember you are talking to a child. Please use simple language and explain your sentences.
   
-  Topic : {topic}
+  Place : {topic}
   Respond in JSON format. WITHOUT Any additional words.
   [
     {{
@@ -63,7 +75,7 @@ con-feedback : |-
 
   Keep in mind, that you are talking to a child, Please provide a friendly and encouraging response.
   Do not mention the child answer directly.
-  Respond in JSON format. WITHOUT Any additional words. 
+  PLEASE Respond in JSON format. WITHOUT Any additional words. 
   {{
     "positive-feedback" : " ",
     "negative-feedback" : " ",
@@ -80,11 +92,11 @@ pro-feedback : |-
 
   Speech Rate : {speech_rate}
   Decibel Level : {decibel_level}
-  Wrong Pronunciation : {wrong_pronunciation}
+  Wrong Pronunciation : {incorrect_pronunciation}
 
   Keep in mind, that you are talking to a child, Please provide a friendly and encouraging response.
   Do not mention the child answer directly.
-  Respond in JSON format. WITHOUT Any additional words.
+  PLEASE Respond in JSON format. WITHOUT Any additional words.
   {{
     "positive-feedback" : " ",
     "negative-feedback" : " ",

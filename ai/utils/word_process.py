@@ -22,17 +22,12 @@ so that measures can be computed and an alignment can be visualized.
 """
 
 from dataclasses import dataclass
-
-from typing import Any, List, Union
 from itertools import chain
+from typing import Any, List, Union
 
 import rapidfuzz
-
-from rapidfuzz.distance import Opcodes
-
-from jiwer import transforms as tr
+from jiwer import transforms as tr, process_words
 from jiwer.transformations import wer_default, cer_default
-
 
 __all__ = [
     "AlignmentChunk",
@@ -40,6 +35,7 @@ __all__ = [
     "CharacterOutput",
     "process_words",
     "process_characters",
+    "get_incorrect_idx",
 ]
 
 
@@ -128,16 +124,16 @@ class WordOutput:
     substitutions: int
     insertions: int
     deletions: int
-    
+
     # content
-    content : list
+    content: list
 
 
-def get_wrong_idx(
-    reference: Union[str, List[str]],
-    hypothesis: Union[str, List[str]],
-    reference_transform: Union[tr.Compose, tr.AbstractTransform] = wer_default,
-    hypothesis_transform: Union[tr.Compose, tr.AbstractTransform] = wer_default,
+def get_incorrect_idx(
+        reference: Union[str, List[str]],
+        hypothesis: Union[str, List[str]],
+        reference_transform: Union[tr.Compose, tr.AbstractTransform] = wer_default,
+        hypothesis_transform: Union[tr.Compose, tr.AbstractTransform] = wer_default,
 ) -> dict:
     """
     Compute the word-level levenshtein distance and alignment between one or more
@@ -196,7 +192,7 @@ def get_wrong_idx(
         # Get the required edit operations to transform reference into hypothesis
         edit_ops = rapidfuzz.distance.Levenshtein.editops(
             reference_sentence, hypothesis_sentence
-            )
+        )
 
         #### 
         # count the number of edits of each type
@@ -210,12 +206,12 @@ def get_wrong_idx(
         substitutions_content = [op.src_pos if op.tag == "replace" else None for op in edit_ops]
         deletions_content = [op.src_pos if op.tag == "delete" else None for op in edit_ops]
         insertions_content = [op.src_pos if op.tag == "insert" else None for op in edit_ops]
-        
+
         # hits_content 
         # hits = len(reference_sentence) - (substitutions + deletions)
-        full_substitutions_content += substitutions_content 
+        full_substitutions_content += substitutions_content
         full_deletions_content += deletions_content
-        full_insertions_content += insertions_content 
+        full_insertions_content += insertions_content
 
         # update state
         # num_hits += hits
@@ -252,10 +248,10 @@ def get_wrong_idx(
     # return all output
     full_substitutions_content = [x for x in full_substitutions_content if x]
     full_deletions_content = [x for x in full_deletions_content if x]
-    full_insertions_content =  [x for x in full_insertions_content if x]
-    output = {"substitutions": full_substitutions_content, 
-                    "deletions": full_deletions_content, 
-                    "insertions":full_insertions_content}
+    full_insertions_content = [x for x in full_insertions_content if x]
+    output = {"substitutions": full_substitutions_content,
+              "deletions": full_deletions_content,
+              "insertions": full_insertions_content}
     return output
     #     references=ref_transformed,
     #     hypotheses=hyp_transformed,
@@ -317,10 +313,10 @@ class CharacterOutput:
 
 
 def process_characters(
-    reference: Union[str, List[str]],
-    hypothesis: Union[str, List[str]],
-    reference_transform: Union[tr.Compose, tr.AbstractTransform] = cer_default,
-    hypothesis_transform: Union[tr.Compose, tr.AbstractTransform] = cer_default,
+        reference: Union[str, List[str]],
+        hypothesis: Union[str, List[str]],
+        reference_transform: Union[tr.Compose, tr.AbstractTransform] = cer_default,
+        hypothesis_transform: Union[tr.Compose, tr.AbstractTransform] = cer_default,
 ) -> CharacterOutput:
     """
     Compute the character-level levenshtein distance and alignment between one or more
@@ -365,9 +361,9 @@ def process_characters(
 
 
 def _apply_transform(
-    sentence: Union[str, List[str]],
-    transform: Union[tr.Compose, tr.AbstractTransform],
-    is_reference: bool,
+        sentence: Union[str, List[str]],
+        transform: Union[tr.Compose, tr.AbstractTransform],
+        is_reference: bool,
 ):
     # Apply transforms. The transforms should collapse input to a
     # list with lists of words
@@ -376,7 +372,7 @@ def _apply_transform(
     # Validate the output is a list containing lists of strings
     if is_reference:
         if not _is_list_of_list_of_strings(
-            transformed_sentence, require_non_empty_lists=True
+                transformed_sentence, require_non_empty_lists=True
         ):
             raise ValueError(
                 "After applying the transformation, each reference should be a "
@@ -384,7 +380,7 @@ def _apply_transform(
             )
     else:
         if not _is_list_of_list_of_strings(
-            transformed_sentence, require_non_empty_lists=False
+                transformed_sentence, require_non_empty_lists=False
         ):
             raise ValueError(
                 "After applying the transformation, each hypothesis should be a "

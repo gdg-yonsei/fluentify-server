@@ -1,3 +1,4 @@
+# Imports the Google Cloud stt library
 import json
 import os
 import time
@@ -25,14 +26,13 @@ class TalkingGenerator:
         self.data_path = './data'
         self.character_path = f'{self.data_path}/character'
 
-        now = datetime.now()
-        self.ts = now.strftime("%Y-%m-%d %H:%M:%S")
-        self.dir_path = f'{self.data_path}/{self.ts}'
+        self.ts = datetime.now().strftime("%m%d%H%M%S")
+        self.dir_path = f'{self.data_path}/video_output/{self.ts}'
 
         self.audio_path = self.dir_path + '/output.mp3'
         self.video_path = self.dir_path + "/output.mp4"
         self.wordoffset_path = self.dir_path + '/word_offset.json'
-        self.output_path = self.dir_path + '/final-output.mp4'
+        self.output_path = self.dir_path + '/fianal-output.mp4'
 
         if not os.path.exists(self.dir_path):
             os.makedirs(self.dir_path)
@@ -68,7 +68,6 @@ class TalkingGenerator:
 
     def Speech2Text(self):
         result = self.model.transcribe(self.audio_path)
-
         result.save_as_json(self.wordoffset_path)
         return result
 
@@ -79,7 +78,6 @@ class TalkingGenerator:
         for words in data['segments']:
             for word in words['words']:
                 output.append({'content': word['word'], 'start': word['start'] * 100, 'end': word['end'] * 100})
-
         for sec in data['nonspeech_sections']:
             output.append({'content': None, 'start': sec['start'] * 100, 'end': sec['end'] * 100})
         df = pd.DataFrame(output).sort_values(by=['start'], axis=0)

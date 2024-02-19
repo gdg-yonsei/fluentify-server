@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     image: fluentify-app-server
     volumes:
-      - .:/dist
+      - shared-data:/app/shared-data
     ports:
       - '80:8080'
     restart: 'on-failure'
@@ -20,7 +20,7 @@ services:
     ports:
       - '8081:8081'
     volumes:
-      - './ai:/python-app'
+      - shared-data:/python-app/shared-data
     restart: 'on-failure'
     depends_on:
       - app-server
@@ -39,3 +39,6 @@ services:
     volumes:
       - './firebase-emulator:/firebase-emulator'
     command: 'firebase emulators:start --project fluentify-test --import /firebase-emulator/seed --export-on-exit /firebase-emulator/seed'
+
+volumes:
+  shared-data:
