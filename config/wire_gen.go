@@ -30,7 +30,8 @@ func Init() *Initialization {
 	topicHandlerImpl := handler.TopicHandlerInit(topicServiceImpl, storageServiceImpl)
 	sentenceHandlerImpl := handler.SentenceHandlerInit(sentenceServiceImpl)
 	sceneHandlerImpl := handler.SceneHandlerInit(sceneServiceImpl, storageServiceImpl)
-	initialization := NewInitialization(authMiddlewareImpl, userServiceImpl, storageServiceImpl, topicServiceImpl, sentenceServiceImpl, sceneServiceImpl, userHandlerImpl, topicHandlerImpl, sentenceHandlerImpl, sceneHandlerImpl)
+	feedbackHandlerImpl := handler.FeedbackHandlerInit(storageServiceImpl)
+	initialization := NewInitialization(authMiddlewareImpl, userServiceImpl, storageServiceImpl, topicServiceImpl, sentenceServiceImpl, sceneServiceImpl, userHandlerImpl, topicHandlerImpl, sentenceHandlerImpl, sceneHandlerImpl, feedbackHandlerImpl)
 	return initialization
 }
 
@@ -63,3 +64,5 @@ var topicHandlerSet = wire.NewSet(handler.TopicHandlerInit, wire.Bind(new(handle
 var sentenceHandlerSet = wire.NewSet(handler.SentenceHandlerInit, wire.Bind(new(handler.SentenceHandler), new(*handler.SentenceHandlerImpl)))
 
 var sceneHandlerSet = wire.NewSet(handler.SceneHandlerInit, wire.Bind(new(handler.SceneHandler), new(*handler.SceneHandlerImpl)))
+
+var feedbackHandlerSet = wire.NewSet(handler.FeedbackHandlerInit, wire.Bind(new(handler.FeedbackHandler), new(*handler.FeedbackHandlerImpl)))

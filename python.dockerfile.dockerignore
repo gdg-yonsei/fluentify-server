@@ -1,0 +1,7 @@
+ai/*
+
+!/ai/data
+!/ai/utils
+!/ai/requirements.txt
+!/ai/*.py
+!/ai/*.pyi

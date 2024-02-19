@@ -19,89 +19,181 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	HelloService_Hello_FullMethodName = "/proto.HelloService/Hello"
+	PronunciationFeedbackService_PronunciationFeedback_FullMethodName = "/proto.PronunciationFeedbackService/PronunciationFeedback"
 )
 
-// HelloServiceClient is the client API for HelloService service.
+// PronunciationFeedbackServiceClient is the client API for PronunciationFeedbackService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type HelloServiceClient interface {
-	Hello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloResponse, error)
+type PronunciationFeedbackServiceClient interface {
+	PronunciationFeedback(ctx context.Context, in *PronunciationFeedbackRequest, opts ...grpc.CallOption) (*PronunciationFeedbackResponse, error)
 }
 
-type helloServiceClient struct {
+type pronunciationFeedbackServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewHelloServiceClient(cc grpc.ClientConnInterface) HelloServiceClient {
-	return &helloServiceClient{cc}
+func NewPronunciationFeedbackServiceClient(cc grpc.ClientConnInterface) PronunciationFeedbackServiceClient {
+	return &pronunciationFeedbackServiceClient{cc}
 }
 
-func (c *helloServiceClient) Hello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloResponse, error) {
-	out := new(HelloResponse)
-	err := c.cc.Invoke(ctx, HelloService_Hello_FullMethodName, in, out, opts...)
+func (c *pronunciationFeedbackServiceClient) PronunciationFeedback(ctx context.Context, in *PronunciationFeedbackRequest, opts ...grpc.CallOption) (*PronunciationFeedbackResponse, error) {
+	out := new(PronunciationFeedbackResponse)
+	err := c.cc.Invoke(ctx, PronunciationFeedbackService_PronunciationFeedback_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// HelloServiceServer is the server API for HelloService service.
-// All implementations must embed UnimplementedHelloServiceServer
+// PronunciationFeedbackServiceServer is the server API for PronunciationFeedbackService service.
+// All implementations must embed UnimplementedPronunciationFeedbackServiceServer
 // for forward compatibility
-type HelloServiceServer interface {
-	Hello(context.Context, *HelloRequest) (*HelloResponse, error)
-	mustEmbedUnimplementedHelloServiceServer()
+type PronunciationFeedbackServiceServer interface {
+	PronunciationFeedback(context.Context, *PronunciationFeedbackRequest) (*PronunciationFeedbackResponse, error)
+	mustEmbedUnimplementedPronunciationFeedbackServiceServer()
 }
 
-// UnimplementedHelloServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedHelloServiceServer struct {
+// UnimplementedPronunciationFeedbackServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedPronunciationFeedbackServiceServer struct {
 }
 
-func (UnimplementedHelloServiceServer) Hello(context.Context, *HelloRequest) (*HelloResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Hello not implemented")
+func (UnimplementedPronunciationFeedbackServiceServer) PronunciationFeedback(context.Context, *PronunciationFeedbackRequest) (*PronunciationFeedbackResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PronunciationFeedback not implemented")
 }
-func (UnimplementedHelloServiceServer) mustEmbedUnimplementedHelloServiceServer() {}
+func (UnimplementedPronunciationFeedbackServiceServer) mustEmbedUnimplementedPronunciationFeedbackServiceServer() {
+}
 
-// UnsafeHelloServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to HelloServiceServer will
+// UnsafePronunciationFeedbackServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to PronunciationFeedbackServiceServer will
 // result in compilation errors.
-type UnsafeHelloServiceServer interface {
-	mustEmbedUnimplementedHelloServiceServer()
+type UnsafePronunciationFeedbackServiceServer interface {
+	mustEmbedUnimplementedPronunciationFeedbackServiceServer()
 }
 
-func RegisterHelloServiceServer(s grpc.ServiceRegistrar, srv HelloServiceServer) {
-	s.RegisterService(&HelloService_ServiceDesc, srv)
+func RegisterPronunciationFeedbackServiceServer(s grpc.ServiceRegistrar, srv PronunciationFeedbackServiceServer) {
+	s.RegisterService(&PronunciationFeedbackService_ServiceDesc, srv)
 }
 
-func _HelloService_Hello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HelloRequest)
+func _PronunciationFeedbackService_PronunciationFeedback_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PronunciationFeedbackRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HelloServiceServer).Hello(ctx, in)
+		return srv.(PronunciationFeedbackServiceServer).PronunciationFeedback(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: HelloService_Hello_FullMethodName,
+		FullMethod: PronunciationFeedbackService_PronunciationFeedback_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HelloServiceServer).Hello(ctx, req.(*HelloRequest))
+		return srv.(PronunciationFeedbackServiceServer).PronunciationFeedback(ctx, req.(*PronunciationFeedbackRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// HelloService_ServiceDesc is the grpc.ServiceDesc for HelloService service.
+// PronunciationFeedbackService_ServiceDesc is the grpc.ServiceDesc for PronunciationFeedbackService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var HelloService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.HelloService",
-	HandlerType: (*HelloServiceServer)(nil),
+var PronunciationFeedbackService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.PronunciationFeedbackService",
+	HandlerType: (*PronunciationFeedbackServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Hello",
-			Handler:    _HelloService_Hello_Handler,
+			MethodName: "PronunciationFeedback",
+			Handler:    _PronunciationFeedbackService_PronunciationFeedback_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "internal.proto",
+}
+
+const (
+	CommunicationFeedbackService_CommunicationFeedback_FullMethodName = "/proto.CommunicationFeedbackService/CommunicationFeedback"
+)
+
+// CommunicationFeedbackServiceClient is the client API for CommunicationFeedbackService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type CommunicationFeedbackServiceClient interface {
+	CommunicationFeedback(ctx context.Context, in *CommunicationFeedbackRequest, opts ...grpc.CallOption) (*CommunicationFeedbackResponse, error)
+}
+
+type communicationFeedbackServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewCommunicationFeedbackServiceClient(cc grpc.ClientConnInterface) CommunicationFeedbackServiceClient {
+	return &communicationFeedbackServiceClient{cc}
+}
+
+func (c *communicationFeedbackServiceClient) CommunicationFeedback(ctx context.Context, in *CommunicationFeedbackRequest, opts ...grpc.CallOption) (*CommunicationFeedbackResponse, error) {
+	out := new(CommunicationFeedbackResponse)
+	err := c.cc.Invoke(ctx, CommunicationFeedbackService_CommunicationFeedback_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// CommunicationFeedbackServiceServer is the server API for CommunicationFeedbackService service.
+// All implementations must embed UnimplementedCommunicationFeedbackServiceServer
+// for forward compatibility
+type CommunicationFeedbackServiceServer interface {
+	CommunicationFeedback(context.Context, *CommunicationFeedbackRequest) (*CommunicationFeedbackResponse, error)
+	mustEmbedUnimplementedCommunicationFeedbackServiceServer()
+}
+
+// UnimplementedCommunicationFeedbackServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedCommunicationFeedbackServiceServer struct {
+}
+
+func (UnimplementedCommunicationFeedbackServiceServer) CommunicationFeedback(context.Context, *CommunicationFeedbackRequest) (*CommunicationFeedbackResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CommunicationFeedback not implemented")
+}
+func (UnimplementedCommunicationFeedbackServiceServer) mustEmbedUnimplementedCommunicationFeedbackServiceServer() {
+}
+
+// UnsafeCommunicationFeedbackServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to CommunicationFeedbackServiceServer will
+// result in compilation errors.
+type UnsafeCommunicationFeedbackServiceServer interface {
+	mustEmbedUnimplementedCommunicationFeedbackServiceServer()
+}
+
+func RegisterCommunicationFeedbackServiceServer(s grpc.ServiceRegistrar, srv CommunicationFeedbackServiceServer) {
+	s.RegisterService(&CommunicationFeedbackService_ServiceDesc, srv)
+}
+
+func _CommunicationFeedbackService_CommunicationFeedback_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CommunicationFeedbackRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CommunicationFeedbackServiceServer).CommunicationFeedback(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CommunicationFeedbackService_CommunicationFeedback_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CommunicationFeedbackServiceServer).CommunicationFeedback(ctx, req.(*CommunicationFeedbackRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// CommunicationFeedbackService_ServiceDesc is the grpc.ServiceDesc for CommunicationFeedbackService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var CommunicationFeedbackService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.CommunicationFeedbackService",
+	HandlerType: (*CommunicationFeedbackServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CommunicationFeedback",
+			Handler:    _CommunicationFeedbackService_CommunicationFeedback_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

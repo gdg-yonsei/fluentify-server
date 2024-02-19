@@ -7,7 +7,7 @@ certifi==2024.2.2
 cffi==1.16.0
 charset-normalizer==3.3.2
 click==8.1.7
-datasets==2.17.0
+datasets==2.17.1
 decorator==4.4.2
 dill==0.3.8
 evaluate==0.4.1
@@ -50,7 +50,7 @@ networkx==3.2.1
 numba==0.59.0
 numpy==1.26.4
 openai-whisper==20231117
-opencv-python==4.9.0.80
+opencv-python-headless==4.9.0.80
 packaging==23.2
 pandas==2.2.0
 pillow==10.2.0

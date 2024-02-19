@@ -23,4 +23,4 @@ FROM scratch
 WORKDIR /app
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /build/main /build/.env /app/
-ENTRYPOINT ["./main"]
+ENTRYPOINT ["/app/main"]

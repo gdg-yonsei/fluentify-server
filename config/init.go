@@ -19,6 +19,7 @@ type Initialization struct {
 	TopicHandler    handler.TopicHandler
 	SentenceHandler handler.SentenceHandler
 	SceneHandler    handler.SceneHandler
+	FeedbackHandler handler.FeedbackHandler
 }
 
 func NewInitialization(
@@ -34,6 +35,7 @@ func NewInitialization(
 	topicHandler handler.TopicHandler,
 	sentenceHandler handler.SentenceHandler,
 	sceneHandler handler.SceneHandler,
+	feedbackHandler handler.FeedbackHandler,
 ) *Initialization {
 	return &Initialization{
 		AuthMiddleware:  authMiddleware,
@@ -46,5 +48,6 @@ func NewInitialization(
 		TopicHandler:    topicHandler,
 		SentenceHandler: sentenceHandler,
 		SceneHandler:    sceneHandler,
+		FeedbackHandler: feedbackHandler,
 	}
 }
