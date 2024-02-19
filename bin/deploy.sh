@@ -5,7 +5,7 @@ git pull origin main
 git submodule update --recursive
 
 # Remove unused docker images & build cache
-docker system prune
+docker system prune -f
 
 # Build and run the docker containers
 docker compose build
