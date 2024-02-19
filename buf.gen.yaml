@@ -4,6 +4,9 @@ managed:
   go_package_prefix:
     default: "."
 plugins:
+  - plugin: buf.build/grpc/go:v1.3.0
+    out: gen/proto
+    opt: paths=source_relative
   - plugin: buf.build/protocolbuffers/go:v1.31.0
     out: gen/proto
     opt: paths=source_relative
