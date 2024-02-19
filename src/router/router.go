@@ -6,6 +6,7 @@ import (
 	pb "github.com/gdsc-ys/fluentify-server/gen/proto"
 	"github.com/gdsc-ys/fluentify-server/src/middleware"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net/http"
 	"os"
@@ -42,7 +43,7 @@ func Router(init *config.Initialization) *echo.Echo {
 
 	e.GET("/PingHello", func(c echo.Context) error {
 		name := c.Param("name")
-		conn, err := grpc.Dial(os.Getenv("AI_SERVER_HOST"), grpc.WithInsecure(), grpc.WithBlock())
+		conn, err := grpc.Dial(os.Getenv("AI_SERVER_HOST"), grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 		if err != nil {
 			log.Fatalf("did not connect grpc: %v", err)
 		}
