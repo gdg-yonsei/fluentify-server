@@ -22,8 +22,7 @@ class PronunciationFeedbackService(internal_pb2_grpc.PronunciationFeedbackServic
 
         return internal_pb2.PronunciationFeedbackResponse(
             transcript=feedback["transcription"],
-            wrong_idx_major=feedback["incorrect_indexes"]["major"],
-            wrong_idx_minor=feedback["incorrect_indexes"]["minor"],
+            incorrect_indexes=feedback["incorrect_indexes"],
             pronunciation_score=feedback["pronunciation_score"],
             decibel=feedback["decibel"],
             speech_rate=feedback["speech_rate"],
