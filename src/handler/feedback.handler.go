@@ -15,6 +15,9 @@ import (
 	"math"
 	"net/http"
 	"os"
+	"strings"
+	"unicode"
+	"unicode/utf8"
 )
 
 type FeedbackHandler interface {
@@ -23,7 +26,9 @@ type FeedbackHandler interface {
 }
 
 type FeedbackHandlerImpl struct {
-	storageService service.StorageService
+	sentenceService service.SentenceService
+	sceneService    service.SceneService
+	storageService  service.StorageService
 }
 
 func (handler *FeedbackHandlerImpl) GetPronunciationFeedback(c echo.Context) error {
@@ -31,11 +36,19 @@ func (handler *FeedbackHandlerImpl) GetPronunciationFeedback(c echo.Context) err
 	if err := c.Bind(&request); err != nil {
 		return model.NewCustomHTTPError(http.StatusBadRequest, err)
 	}
+	if request.GetSentenceId() == "" {
+		return model.NewCustomHTTPError(http.StatusBadRequest, "sentence_id is required")
+	}
+	sentence, err := handler.sentenceService.GetSentence(request.GetSentenceId())
+	if err != nil {
+		return model.NewCustomHTTPError(http.StatusInternalServerError, err)
+	}
 
-	hardCodedAudioFile := "example1.m4a"
-	sharedFilePath := constant.SharedAudioPath + "/" + hardCodedAudioFile
+	bucketPath := request.GetAudioFileUrl()
+	splitPath := strings.Split(bucketPath, "/")
+	fileName := splitPath[len(splitPath)-1]
+	sharedFilePath := constant.SharedAudioPath + "/" + fileName
 	if !existsFile(sharedFilePath) {
-		bucketPath := "audio/" + hardCodedAudioFile
 		bytes, err := handler.storageService.GetFile(bucketPath)
 		if err != nil {
 			return model.NewCustomHTTPError(http.StatusInternalServerError, err)
@@ -60,29 +73,31 @@ func (handler *FeedbackHandlerImpl) GetPronunciationFeedback(c echo.Context) err
 	defer cancel()
 
 	grpcRequest := pb.PronunciationFeedbackRequest{
-		Sentence:  "It's autumn now, and the leaves are turning beautiful colors.",
-		AudioPath: hardCodedAudioFile,
-		Tip:       "Say 'aw-tum,' not 'ay-tum.'",
+		Sentence:  sentence.Text,
+		AudioPath: fileName,
+		Tip:       sentence.Tip,
 	}
 
-	response, err := client.PronunciationFeedback(ctx, &grpcRequest)
+	feedbackResponse, err := client.PronunciationFeedback(ctx, &grpcRequest)
 	if err != nil {
 		log.Printf("grpc request failed: %v", err)
 		return model.NewCustomHTTPError(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
 	}
 
-	pronunciationScore := int32(math.Round(response.GetPronunciationScore() * 100))
-	decibel := int32(math.Round(response.GetDecibel()))
-	speechRate := int32(math.Round(response.GetSpeechRate()))
+	pronunciationScore := int32(math.Round(feedbackResponse.GetPronunciationScore()))
+	decibel := int32(math.Round(feedbackResponse.GetDecibel()))
+	speechRate := int32(math.Round(feedbackResponse.GetSpeechRate()))
+	transcript := firstToUpper(feedbackResponse.GetTranscript())
 
 	result := pb.GetPronunciationFeedbackResponse{
 		PronunciationFeedback: &pb.PronunciationFeedbackDTO{
 			SentenceId:         request.GetSentenceId(),
-			IncorrectIndexes:   response.GetIncorrectIndexes(),
+			Transcript:         transcript,
+			IncorrectIndexes:   feedbackResponse.GetIncorrectIndexes(),
 			PronunciationScore: pronunciationScore,
 			VolumeScore:        decibel,
 			SpeedScore:         speechRate,
-			OverallFeedback:    response.GetPositiveFeedback(),
+			OverallFeedback:    feedbackResponse.GetPositiveFeedback(),
 		},
 	}
 
@@ -94,11 +109,19 @@ func (handler *FeedbackHandlerImpl) GetCommunicationFeedback(c echo.Context) err
 	if err := c.Bind(&request); err != nil {
 		return model.NewCustomHTTPError(http.StatusBadRequest, err)
 	}
+	if request.GetSceneId() == "" {
+		return model.NewCustomHTTPError(http.StatusBadRequest, "scene_id is required")
+	}
+	scene, err := handler.sceneService.GetScene(request.GetSceneId())
+	if err != nil {
+		return model.NewCustomHTTPError(http.StatusInternalServerError, err)
+	}
 
-	hardCodedAudioFile := "example1.m4a"
-	sharedFilePath := constant.SharedAudioPath + "/" + hardCodedAudioFile
+	bucketPath := request.GetAudioFileUrl()
+	splitPath := strings.Split(bucketPath, "/")
+	fileName := splitPath[len(splitPath)-1]
+	sharedFilePath := constant.SharedAudioPath + "/" + fileName
 	if !existsFile(sharedFilePath) {
-		bucketPath := "audio/" + hardCodedAudioFile
 		bytes, err := handler.storageService.GetFile(bucketPath)
 		if err != nil {
 			return model.NewCustomHTTPError(http.StatusInternalServerError, err)
@@ -125,11 +148,11 @@ func (handler *FeedbackHandlerImpl) GetCommunicationFeedback(c echo.Context) err
 	defer cancel()
 
 	grpcRequest := pb.CommunicationFeedbackRequest{
-		Context:        "Let's imagine that you are a brave captain of a big ship. You are sailing on the high seas. Suddenly, you see a beautiful sunset. Look at this picture and tell me...",
-		Question:       "What colors can you see in the sky?",
-		ExpectedAnswer: "I can see red, orange, and yellow.",
-		AudioPath:      "example1.m4a",
-		ImgPath:        "img/1070.jpg",
+		Context:        scene.Context,
+		Question:       scene.Question,
+		ExpectedAnswer: scene.ExpectedAnswer,
+		AudioPath:      fileName,
+		ImgPath:        scene.ImageUrl,
 	}
 
 	response, err := client.CommunicationFeedback(ctx, &grpcRequest)
@@ -178,8 +201,19 @@ func writeFile(fileName string, bytes []byte) error {
 	return nil
 }
 
-func FeedbackHandlerInit(storageService service.StorageService) *FeedbackHandlerImpl {
+func firstToUpper(s string) string {
+	r, size := utf8.DecodeRuneInString(s)
+	if r == utf8.RuneError && size <= 1 {
+		return s
+	}
+	lowerCase := strings.ToLower(s)
+	return string(unicode.ToUpper(r)) + lowerCase[size:]
+}
+
+func FeedbackHandlerInit(sentenceService service.SentenceService, sceneService service.SceneService, storageService service.StorageService) *FeedbackHandlerImpl {
 	return &FeedbackHandlerImpl{
-		storageService: storageService,
+		sentenceService: sentenceService,
+		sceneService:    sceneService,
+		storageService:  storageService,
 	}
 }
