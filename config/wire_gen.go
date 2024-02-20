@@ -28,7 +28,7 @@ func Init() *Initialization {
 	sceneServiceImpl := service.SceneServiceInit(firestoreClient)
 	userHandlerImpl := handler.UserHandlerInit(userServiceImpl)
 	topicHandlerImpl := handler.TopicHandlerInit(topicServiceImpl, storageServiceImpl)
-	sentenceHandlerImpl := handler.SentenceHandlerInit(sentenceServiceImpl)
+	sentenceHandlerImpl := handler.SentenceHandlerInit(sentenceServiceImpl, storageServiceImpl)
 	sceneHandlerImpl := handler.SceneHandlerInit(sceneServiceImpl, storageServiceImpl)
 	feedbackHandlerImpl := handler.FeedbackHandlerInit(sentenceServiceImpl, sceneServiceImpl, storageServiceImpl)
 	initialization := NewInitialization(authMiddlewareImpl, userServiceImpl, storageServiceImpl, topicServiceImpl, sentenceServiceImpl, sceneServiceImpl, userHandlerImpl, topicHandlerImpl, sentenceHandlerImpl, sceneHandlerImpl, feedbackHandlerImpl)
