@@ -16,24 +16,22 @@ class PronunciationFeedbackRequest(_message.Message):
     def __init__(self, sentence: _Optional[str] = ..., audio_path: _Optional[str] = ..., tip: _Optional[str] = ...) -> None: ...
 
 class PronunciationFeedbackResponse(_message.Message):
-    __slots__ = ("transcript", "wrong_idx_major", "wrong_idx_minor", "pronunciation_score", "decibel", "speech_rate", "positive_feedback", "negative_feedback")
+    __slots__ = ("transcript", "incorrect_indexes", "pronunciation_score", "decibel", "speech_rate", "positive_feedback", "negative_feedback")
     TRANSCRIPT_FIELD_NUMBER: _ClassVar[int]
-    WRONG_IDX_MAJOR_FIELD_NUMBER: _ClassVar[int]
-    WRONG_IDX_MINOR_FIELD_NUMBER: _ClassVar[int]
+    INCORRECT_INDEXES_FIELD_NUMBER: _ClassVar[int]
     PRONUNCIATION_SCORE_FIELD_NUMBER: _ClassVar[int]
     DECIBEL_FIELD_NUMBER: _ClassVar[int]
     SPEECH_RATE_FIELD_NUMBER: _ClassVar[int]
     POSITIVE_FEEDBACK_FIELD_NUMBER: _ClassVar[int]
     NEGATIVE_FEEDBACK_FIELD_NUMBER: _ClassVar[int]
     transcript: str
-    wrong_idx_major: _containers.RepeatedScalarFieldContainer[int]
-    wrong_idx_minor: _containers.RepeatedScalarFieldContainer[int]
+    incorrect_indexes: _containers.RepeatedScalarFieldContainer[int]
     pronunciation_score: float
     decibel: float
     speech_rate: float
     positive_feedback: str
     negative_feedback: str
-    def __init__(self, transcript: _Optional[str] = ..., wrong_idx_major: _Optional[_Iterable[int]] = ..., wrong_idx_minor: _Optional[_Iterable[int]] = ..., pronunciation_score: _Optional[float] = ..., decibel: _Optional[float] = ..., speech_rate: _Optional[float] = ..., positive_feedback: _Optional[str] = ..., negative_feedback: _Optional[str] = ...) -> None: ...
+    def __init__(self, transcript: _Optional[str] = ..., incorrect_indexes: _Optional[_Iterable[int]] = ..., pronunciation_score: _Optional[float] = ..., decibel: _Optional[float] = ..., speech_rate: _Optional[float] = ..., positive_feedback: _Optional[str] = ..., negative_feedback: _Optional[str] = ...) -> None: ...
 
 class CommunicationFeedbackRequest(_message.Message):
     __slots__ = ("context", "question", "expected_answer", "audio_path", "img_path")

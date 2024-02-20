@@ -78,7 +78,7 @@ func (handler *FeedbackHandlerImpl) GetPronunciationFeedback(c echo.Context) err
 	result := pb.GetPronunciationFeedbackResponse{
 		PronunciationFeedback: &pb.PronunciationFeedbackDTO{
 			SentenceId:         request.GetSentenceId(),
-			IncorrectIndexes:   response.WrongIdxMajor,
+			IncorrectIndexes:   response.GetIncorrectIndexes(),
 			PronunciationScore: pronunciationScore,
 			VolumeScore:        decibel,
 			SpeedScore:         speechRate,
