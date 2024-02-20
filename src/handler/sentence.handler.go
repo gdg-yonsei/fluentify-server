@@ -15,6 +15,7 @@ type SentenceHandler interface {
 
 type SentenceHandlerImpl struct {
 	sentenceService service.SentenceService
+	storageService  service.StorageService
 }
 
 func (handler *SentenceHandlerImpl) GetSentence(c echo.Context) error {
@@ -31,7 +32,12 @@ func (handler *SentenceHandlerImpl) GetSentence(c echo.Context) error {
 		return model.NewCustomHTTPError(http.StatusInternalServerError, err)
 	}
 
-	response := &pb.GetSentenceResponse{Sentence: converter.ToSentenceDTO(sentence)}
+	exampleVideoUrl, err := handler.storageService.GetFileUrl(sentence.VideoPath)
+	if err != nil {
+		return model.NewCustomHTTPError(http.StatusInternalServerError, err)
+	}
+
+	response := &pb.GetSentenceResponse{Sentence: converter.ToSentenceDTO(sentence, exampleVideoUrl)}
 	return c.JSON(http.StatusOK, response)
 }
 

@@ -5,9 +5,10 @@ import (
 	"github.com/gdsc-ys/fluentify-server/src/model"
 )
 
-func ToSentenceDTO(sentence model.Sentence) *pb.SentenceDTO {
+func ToSentenceDTO(sentence model.Sentence, exampleVideoUrl string) *pb.SentenceDTO {
 	return &pb.SentenceDTO{
-		Id:   sentence.Id,
-		Text: sentence.Text,
+		Id:              sentence.Id,
+		Text:            sentence.Text,
+		ExampleVideoUrl: exampleVideoUrl,
 	}
 }

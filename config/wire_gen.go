@@ -30,7 +30,7 @@ func Init() *Initialization {
 	topicHandlerImpl := handler.TopicHandlerInit(topicServiceImpl, storageServiceImpl)
 	sentenceHandlerImpl := handler.SentenceHandlerInit(sentenceServiceImpl)
 	sceneHandlerImpl := handler.SceneHandlerInit(sceneServiceImpl, storageServiceImpl)
-	feedbackHandlerImpl := handler.FeedbackHandlerInit(storageServiceImpl)
+	feedbackHandlerImpl := handler.FeedbackHandlerInit(sentenceServiceImpl, sceneServiceImpl, storageServiceImpl)
 	initialization := NewInitialization(authMiddlewareImpl, userServiceImpl, storageServiceImpl, topicServiceImpl, sentenceServiceImpl, sceneServiceImpl, userHandlerImpl, topicHandlerImpl, sentenceHandlerImpl, sceneHandlerImpl, feedbackHandlerImpl)
 	return initialization
 }
