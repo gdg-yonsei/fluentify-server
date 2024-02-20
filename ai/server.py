@@ -21,9 +21,9 @@ class PronunciationFeedbackService(internal_pb2_grpc.PronunciationFeedbackServic
         print(feedback)
 
         return internal_pb2.PronunciationFeedbackResponse(
-            transcript=feedback["transcript"],
-            wrong_idx_major=feedback["wrong_idx"]["major"],
-            wrong_idx_minor=feedback["wrong_idx"]["minor"],
+            transcript=feedback["transcription"],
+            wrong_idx_major=feedback["incorrect_indexes"]["major"],
+            wrong_idx_minor=feedback["incorrect_indexes"]["minor"],
             pronunciation_score=feedback["pronunciation_score"],
             decibel=feedback["decibel"],
             speech_rate=feedback["speech_rate"],
@@ -41,8 +41,8 @@ class CommunicationFeedbackService(internal_pb2_grpc.CommunicationFeedbackServic
             "user-audio": request.audio_path,
             "context": request.context,
             "question": request.question,
-            "answer": request.answer,
-            "img": request.img
+            "answer": request.expected_answer,
+            "img": request.img_path,
         }
         feedback = self.ft.ComFeedback(com_input)
         print(feedback)
