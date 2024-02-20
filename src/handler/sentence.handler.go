@@ -41,8 +41,9 @@ func (handler *SentenceHandlerImpl) GetSentence(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 }
 
-func SentenceHandlerInit(sentenceService service.SentenceService) *SentenceHandlerImpl {
+func SentenceHandlerInit(sentenceService service.SentenceService, storageService service.StorageService) *SentenceHandlerImpl {
 	return &SentenceHandlerImpl{
 		sentenceService: sentenceService,
+		storageService:  storageService,
 	}
 }
