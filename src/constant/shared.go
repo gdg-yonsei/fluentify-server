@@ -1,7 +1,7 @@
 package constant
 
 const (
-	SharedPath = "shared-data"
+	SharedPath = "./shared-data"
 
 	SharedAudioPath = SharedPath + "/audio"
 )
