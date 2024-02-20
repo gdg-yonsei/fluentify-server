@@ -160,6 +160,11 @@ func existsFile(fileName string) bool {
 }
 
 func writeFile(fileName string, bytes []byte) error {
+	err := os.MkdirAll(constant.SharedAudioPath, os.ModePerm)
+	if err != nil {
+		return err
+	}
+
 	fileToWrite, err := os.Create(fileName)
 	if err != nil {
 		return err
