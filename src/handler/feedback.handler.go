@@ -15,7 +15,6 @@ import (
 	"math"
 	"net/http"
 	"os"
-	"time"
 )
 
 type FeedbackHandler interface {
@@ -57,7 +56,7 @@ func (handler *FeedbackHandlerImpl) GetPronunciationFeedback(c echo.Context) err
 	//client 생성
 	client := pb.NewPronunciationFeedbackServiceClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), constant.GrpcDefaultTimeout)
 	defer cancel()
 
 	grpcRequest := pb.PronunciationFeedbackRequest{
@@ -122,7 +121,7 @@ func (handler *FeedbackHandlerImpl) GetCommunicationFeedback(c echo.Context) err
 	//client 생성
 	client := pb.NewCommunicationFeedbackServiceClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), constant.GrpcDefaultTimeout)
 	defer cancel()
 
 	grpcRequest := pb.CommunicationFeedbackRequest{
