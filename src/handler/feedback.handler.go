@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 	pb "github.com/gdsc-ys/fluentify-server/gen/proto"
 	"github.com/gdsc-ys/fluentify-server/src/constant"
 	"github.com/gdsc-ys/fluentify-server/src/model"
@@ -9,6 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"io/fs"
 	"log"
 	"math"
 	"net/http"
@@ -150,7 +152,7 @@ func (handler *FeedbackHandlerImpl) GetCommunicationFeedback(c echo.Context) err
 func existsFile(fileName string) bool {
 	_, err := os.Stat(fileName)
 
-	if os.IsNotExist(err) {
+	if errors.Is(err, fs.ErrNotExist) {
 		return false
 	} else {
 		return true
