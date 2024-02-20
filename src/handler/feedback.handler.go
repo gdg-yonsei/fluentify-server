@@ -32,20 +32,15 @@ func (handler *FeedbackHandlerImpl) GetPronunciationFeedback(c echo.Context) err
 	}
 
 	hardCodedAudioFile := "example1.m4a"
-	if !existsFile(constant.SharedAudioPath + hardCodedAudioFile) {
+	sharedFilePath := constant.SharedAudioPath + "/" + hardCodedAudioFile
+	if !existsFile(sharedFilePath) {
 		bucketPath := "audio/" + hardCodedAudioFile
 		bytes, err := handler.storageService.GetFile(bucketPath)
 		if err != nil {
 			return model.NewCustomHTTPError(http.StatusInternalServerError, err)
 		}
 
-		fileToWrite, err := os.Create(constant.SharedAudioPath + hardCodedAudioFile)
-		if err != nil {
-			return model.NewCustomHTTPError(http.StatusInternalServerError, err)
-		}
-		defer fileToWrite.Close()
-
-		_, err = fileToWrite.Write(bytes)
+		err = writeFile(sharedFilePath, bytes)
 		if err != nil {
 			return model.NewCustomHTTPError(http.StatusInternalServerError, err)
 		}
@@ -100,20 +95,15 @@ func (handler *FeedbackHandlerImpl) GetCommunicationFeedback(c echo.Context) err
 	}
 
 	hardCodedAudioFile := "example1.m4a"
-	if !existsFile(constant.SharedAudioPath + hardCodedAudioFile) {
+	sharedFilePath := constant.SharedAudioPath + "/" + hardCodedAudioFile
+	if !existsFile(sharedFilePath) {
 		bucketPath := "audio/" + hardCodedAudioFile
 		bytes, err := handler.storageService.GetFile(bucketPath)
 		if err != nil {
 			return model.NewCustomHTTPError(http.StatusInternalServerError, err)
 		}
 
-		fileToWrite, err := os.Create(constant.SharedAudioPath + hardCodedAudioFile)
-		if err != nil {
-			return model.NewCustomHTTPError(http.StatusInternalServerError, err)
-		}
-		defer fileToWrite.Close()
-
-		_, err = fileToWrite.Write(bytes)
+		err = writeFile(sharedFilePath, bytes)
 		if err != nil {
 			return model.NewCustomHTTPError(http.StatusInternalServerError, err)
 		}
@@ -165,6 +155,21 @@ func existsFile(fileName string) bool {
 	} else {
 		return true
 	}
+}
+
+func writeFile(fileName string, bytes []byte) error {
+	fileToWrite, err := os.Create(fileName)
+	if err != nil {
+		return err
+	}
+	defer fileToWrite.Close()
+
+	_, err = fileToWrite.Write(bytes)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func FeedbackHandlerInit(storageService service.StorageService) *FeedbackHandlerImpl {
