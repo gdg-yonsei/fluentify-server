@@ -26,8 +26,8 @@ class PronunciationFeedbackService(internal_pb2_grpc.PronunciationFeedbackServic
             pronunciation_score=feedback["pronunciation_score"],
             decibel=feedback["decibel"],
             speech_rate=feedback["speech_rate"],
-            positive_feedback=feedback["positive_feedback"],
-            negative_feedback=feedback["negative_feedback"]
+            positive_feedback=feedback["positive-feedback"],
+            negative_feedback=feedback["negative-feedback"]
         )
 
 
@@ -47,9 +47,9 @@ class CommunicationFeedbackService(internal_pb2_grpc.CommunicationFeedbackServic
         print(feedback)
 
         return internal_pb2.CommunicationFeedbackResponse(
-            positive_feedback=feedback["positive_feedback"],
-            negative_feedback=feedback["negative_feedback"],
-            enhanced_answer=feedback["enhanced_answer"]
+            positive_feedback=feedback["positive-feedback"],
+            negative_feedback=feedback["negative-feedback"],
+            enhanced_answer=feedback["enhanced-answer"]
         )
 
 
