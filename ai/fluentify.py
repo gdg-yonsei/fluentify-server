@@ -4,15 +4,13 @@ import os
 import librosa
 import numpy as np
 import stable_whisper
-import torch
 import vertexai
 import yaml
 from evaluate import load
-from transformers import AutoTokenizer, AutoFeatureExtractor, AutoModelForCTC
 from vertexai.preview.generative_models import GenerativeModel, Part
 
 from utils.utils import text2dict
-from utils.word_process import get_incorrect_idx
+from utils.word_process import get_incorrect_idxes
 
 
 # gcloud auth application-default login
@@ -25,21 +23,19 @@ class Fluentify:
         self.lang_model = GenerativeModel("gemini-pro")
         self.current_path = os.path.dirname(__file__)
         self.gcs_path = "gs://fluentify-412312.appspot.com"
-        self.shared_path = "./shared-data"
-        self.ars_whisper_model = stable_whisper.load_model('base')
+        self.ars_model = stable_whisper.load_model('base')
 
         with open(os.path.join(self.current_path, 'data/prompt.yaml'), 'r', encoding='UTF-8') as file:
             self.prompt = yaml.load(file, Loader=yaml.FullLoader)
 
-        self.audio_path = self.shared_path + "/audio"
-        self.tokenizer = AutoTokenizer.from_pretrained("facebook/wav2vec2-base-960h")
-        self.ars_w2v_model = AutoModelForCTC.from_pretrained("facebook/wav2vec2-base-960h")
-        self.feature_extractor = AutoFeatureExtractor.from_pretrained("facebook/wav2vec2-base-960h",
-                                                                      sampling_rate=16000)
+        self.audio_path = "./data/audio"
+        # self.tokenizer =  AutoTokenizer.from_pretrained("facebook/wav2vec2-base-960h")
+        # self.ars_w2v_model = AutoModelForCTC.from_pretrained("facebook/wav2vec2-base-960h")
+        # self.feature_extractor = AutoFeatureExtractor.from_pretrained("facebook/wav2vec2-base-960h", sampling_rate=16000)
         self.wer = load("wer")
 
-        self.speech_rate_threshold_h = 2.5
-        self.speech_rate_threshold_l = 1.0
+        self.speech_rate_threshold_h = 4.5
+        self.speech_rate_threshold_l = 2.5
         self.decibel_threshold_h = 95
         self.decibel_threshold_l = 45
 
@@ -49,37 +45,26 @@ class Fluentify:
     def GetWer(self, transcription, ground_truth):
         # WER score is from 0 to 1
         wer_score = self.wer.compute(predictions=[transcription], references=[ground_truth])
-        incorrect_idx = get_incorrect_idx(ground_truth, transcription)
-        incorrect_idx = {"minor": incorrect_idx["substitutions"], "major": incorrect_idx["deletions"]}
-        return wer_score, incorrect_idx
+        incorrect_idxes = get_incorrect_idxes(ground_truth, transcription)
+        self.wer_score = wer_score
+        self.incorrect_idxes = incorrect_idxes["substitutions"] + incorrect_idxes["deletions"]
 
-    def ASR(self, audio_path):
-        ## TODO : Audio File Path ####
-        input_audio = librosa.load(audio_path, sr=22000)[0]
-        input_values = self.feature_extractor(input_audio, return_tensors="pt", padding="longest").input_values
+    def GetDecibel(self, audio_path):
+        input_audio, _ = librosa.load(audio_path, sr=22000)
         rms = librosa.feature.rms(y=input_audio)
-
-        with torch.no_grad():
-            logits = self.ars_w2v_model(input_values).logits[0]
-            pred_ids = torch.argmax(logits, axis=-1)
-        outputs = self.tokenizer.decode(pred_ids, output_word_offsets=True)
-        time_offset = self.ars_w2v_model.config.inputs_to_logits_ratio / self.feature_extractor.sampling_rate
-
-        transcription = outputs[0]
-        word_offsets = [
-            {
-                "word": d["word"],
-                "start_time": round(d["start_offset"] * time_offset, 2),
-                "end_time": round(d["end_offset"] * time_offset, 2),
-                "time": round(d["end_offset"] * time_offset - d["start_offset"] * time_offset, 2),
-            }
-            for d in outputs.word_offsets
-        ]
-
-        time = word_offsets[-1]["end_time"]
-        speech_rate = len(word_offsets) / word_offsets[-1]["end_time"]
         decibel = 20 * math.log10(np.mean(rms) / 0.00002)
-        return transcription, time, speech_rate, decibel
+        return decibel
+
+    def EvaluatePro(self, audio_path):
+        transcription = self.ars_model.transcribe(audio_path)
+        self.pro_transcription = transcription.text
+
+        word_offset = transcription.segments
+        start, end = word_offset[0].start, word_offset[-1].end
+        duration = end - start
+
+        self.speech_rate = len(self.pro_transcription.split(' ')) / duration
+        self.decibel = self.GetDecibel(audio_path)
 
     def Score2Des(self, output):
         feedback = {
@@ -113,11 +98,12 @@ class Fluentify:
             return 5
 
     def ComFeedback(self, input):
-        image = Part.from_uri(f"{self.gcs_path}/{input['img']}", mime_type="image/jpeg")
-        response = self.ars_whisper_model.transcribe(f"{self.audio_path}/{input['user-audio']}")
+        image = Part.from_uri(f"{self.gcs_path}/img/{input['img']}", mime_type="image/jpeg")
+        response = self.ars_model.transcribe(f"{self.audio_path}/{input['user-audio']}")
+        self.com_trnascription = response.text
+        output = {"transcription": self.com_trnascription}
 
-        output = {"transcription": response.text}
-        #### TODO : Feedback focusing more on sentence formulation ##### 
+        #### TODO : Feedback focusing more on sentence formulation #####
         prompt = f"{self.prompt['con-feedback']}".format(context=input["context"], question=input["question"],
                                                          answer=input["answer"], user_answer=output['transcription'])
         response = self.multimodal_model.generate_content([prompt, image])
@@ -131,30 +117,29 @@ class Fluentify:
             return None
 
     def ProFeedback(self, input):
-        ground_truth = input["practice-sentence"]
-        transcription, time, speech_rate, decibel = self.ASR(f"{self.audio_path}/{input['user-audio']}")
-        wer_score, incorrect_idx = self.GetWer(transcription.upper(), ground_truth.upper())
-
+        ground_truth = input["practice-sentece"]
+        self.EvaluatePro(f"{self.audio_path}/{input['user-audio']}")
+        self.GetWer(self.pro_transcription.upper(), ground_truth.upper())
         sentence_lst = ground_truth.split(" ")
 
-        pronunciation_score = self.ScoreMap(1 - wer_score, 1)
-        speed_socre = self.ScoreMap(speech_rate, self.speech_rate_threshold)
-        volume_score = self.ScoreMap(decibel, self.decibel_threshold)
+        pronunciation_score = self.ScoreMap(1 - self.wer_score, 1)
+        speed_score = self.ScoreMap(self.speech_rate, self.speech_rate_threshold)
+        volume_score = self.ScoreMap(self.decibel, self.decibel_threshold)
 
         output = {
-            "transcription": transcription,
-            "incorrect_indexes": incorrect_idx['major'],
+            "transcription": self.pro_transcription,
+            "incorrect_indexes": self.incorrect_idxes,
+            "decibel": self.decibel,
+            "speech_rate": self.speech_rate,
             "pronunciation_score": pronunciation_score,  # higher the better
-            "voulume_score": volume_score,  # higher the better
-            "speed_socre": speed_socre,
-            "decibel": decibel,
-            "speech_rate": speech_rate
+            "volume_score": volume_score,  # higher the better
+            "speed_score": speed_score
         }
 
         feedback = self.Score2Des(output)
 
-        ## TODO : Decide whether to use only major errors or only minor errors ## 
-        # only if there is major incorrect pronunciation 
+        ## TODO : Decide whether to use only major errors or only minor errors ##
+        # only if there is major incorrect pronunciation
         if len(output["incorrect_indexes"]) > 0:
             for idx in output["incorrect_indexes"]:
                 feedback['incorrect_pronunciation'] = f"Your pronunciation for {sentence_lst[idx]} is not correct"
