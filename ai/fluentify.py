@@ -28,7 +28,7 @@ class Fluentify:
         with open(os.path.join(self.current_path, 'data/prompt.yaml'), 'r', encoding='UTF-8') as file:
             self.prompt = yaml.load(file, Loader=yaml.FullLoader)
 
-        self.audio_path = "./data/audio"
+        self.audio_path = "./shared-data/audio"
         # self.tokenizer =  AutoTokenizer.from_pretrained("facebook/wav2vec2-base-960h")
         # self.ars_w2v_model = AutoModelForCTC.from_pretrained("facebook/wav2vec2-base-960h")
         # self.feature_extractor = AutoFeatureExtractor.from_pretrained("facebook/wav2vec2-base-960h", sampling_rate=16000)
