@@ -24,8 +24,8 @@ class PronunciationFeedbackService(internal_pb2_grpc.PronunciationFeedbackServic
             transcript=feedback["transcription"],
             incorrect_indexes=feedback["incorrect_indexes"],
             pronunciation_score=feedback["pronunciation_score"],
-            decibel=feedback["decibel"],
-            speech_rate=feedback["speech_rate"],
+            volume_score=feedback["volume_score"],
+            speed_score=feedback["speed_score"],
             positive_feedback=feedback["positive-feedback"],
             negative_feedback=feedback["negative-feedback"]
         )

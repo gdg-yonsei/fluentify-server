@@ -12,7 +12,6 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"io/fs"
 	"log"
-	"math"
 	"net/http"
 	"os"
 	"strings"
@@ -84,9 +83,6 @@ func (handler *FeedbackHandlerImpl) GetPronunciationFeedback(c echo.Context) err
 		return model.NewCustomHTTPError(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
 	}
 
-	pronunciationScore := int32(math.Round(feedbackResponse.GetPronunciationScore()))
-	decibel := int32(math.Round(feedbackResponse.GetDecibel()))
-	speechRate := int32(math.Round(feedbackResponse.GetSpeechRate()))
 	transcript := firstToUpper(feedbackResponse.GetTranscript())
 
 	result := pb.GetPronunciationFeedbackResponse{
@@ -94,10 +90,11 @@ func (handler *FeedbackHandlerImpl) GetPronunciationFeedback(c echo.Context) err
 			SentenceId:         request.GetSentenceId(),
 			Transcript:         transcript,
 			IncorrectIndexes:   feedbackResponse.GetIncorrectIndexes(),
-			PronunciationScore: pronunciationScore,
-			VolumeScore:        decibel,
-			SpeedScore:         speechRate,
-			OverallFeedback:    feedbackResponse.GetPositiveFeedback(),
+			PronunciationScore: feedbackResponse.GetPronunciationScore(),
+			VolumeScore:        feedbackResponse.GetVolumeScore(),
+			SpeedScore:         feedbackResponse.GetSpeedScore(),
+			PositiveFeedback:   feedbackResponse.GetPositiveFeedback(),
+			NegativeFeedback:   feedbackResponse.GetNegativeFeedback(),
 		},
 	}
 
@@ -163,8 +160,10 @@ func (handler *FeedbackHandlerImpl) GetCommunicationFeedback(c echo.Context) err
 
 	result := pb.GetCommunicationFeedbackResponse{
 		CommunicationFeedback: &pb.CommunicationFeedbackDTO{
-			SceneId:         request.GetSceneId(),
-			OverallFeedback: response.GetPositiveFeedback(),
+			SceneId:          request.GetSceneId(),
+			PositiveFeedback: response.GetPositiveFeedback(),
+			NegativeFeedback: response.GetNegativeFeedback(),
+			EnhancedAnswer:   response.GetEnhancedAnswer(),
 		},
 	}
 

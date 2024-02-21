@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0einternal.proto\x12\x05proto\"Q\n\x1cPronunciationFeedbackRequest\x12\x10\n\x08sentence\x18\x01 \x01(\t\x12\x12\n\naudio_path\x18\x02 \x01(\t\x12\x0b\n\x03tip\x18\x03 \x01(\t\"\xc7\x01\n\x1dPronunciationFeedbackResponse\x12\x12\n\ntranscript\x18\x01 \x01(\t\x12\x19\n\x11incorrect_indexes\x18\x02 \x03(\x05\x12\x1b\n\x13pronunciation_score\x18\x03 \x01(\x01\x12\x0f\n\x07\x64\x65\x63ibel\x18\x04 \x01(\x01\x12\x13\n\x0bspeech_rate\x18\x05 \x01(\x01\x12\x19\n\x11positive_feedback\x18\x06 \x01(\t\x12\x19\n\x11negative_feedback\x18\x07 \x01(\t\"\x80\x01\n\x1c\x43ommunicationFeedbackRequest\x12\x0f\n\x07\x63ontext\x18\x01 \x01(\t\x12\x10\n\x08question\x18\x02 \x01(\t\x12\x17\n\x0f\x65xpected_answer\x18\x03 \x01(\t\x12\x12\n\naudio_path\x18\x04 \x01(\t\x12\x10\n\x08img_path\x18\x05 \x01(\t\"n\n\x1d\x43ommunicationFeedbackResponse\x12\x19\n\x11positive_feedback\x18\x01 \x01(\t\x12\x19\n\x11negative_feedback\x18\x02 \x01(\t\x12\x17\n\x0f\x65nhanced_answer\x18\x03 \x01(\t2\x82\x01\n\x1cPronunciationFeedbackService\x12\x62\n\x15PronunciationFeedback\x12#.proto.PronunciationFeedbackRequest\x1a$.proto.PronunciationFeedbackResponse2\x82\x01\n\x1c\x43ommunicationFeedbackService\x12\x62\n\x15\x43ommunicationFeedback\x12#.proto.CommunicationFeedbackRequest\x1a$.proto.CommunicationFeedbackResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0einternal.proto\x12\x05proto\"Q\n\x1cPronunciationFeedbackRequest\x12\x10\n\x08sentence\x18\x01 \x01(\t\x12\x12\n\naudio_path\x18\x02 \x01(\t\x12\x0b\n\x03tip\x18\x03 \x01(\t\"\xcc\x01\n\x1dPronunciationFeedbackResponse\x12\x12\n\ntranscript\x18\x01 \x01(\t\x12\x19\n\x11incorrect_indexes\x18\x02 \x03(\x05\x12\x1b\n\x13pronunciation_score\x18\x03 \x01(\x05\x12\x14\n\x0cvolume_score\x18\x04 \x01(\x05\x12\x13\n\x0bspeed_score\x18\x05 \x01(\x05\x12\x19\n\x11positive_feedback\x18\x06 \x01(\t\x12\x19\n\x11negative_feedback\x18\x07 \x01(\t\"\x80\x01\n\x1c\x43ommunicationFeedbackRequest\x12\x0f\n\x07\x63ontext\x18\x01 \x01(\t\x12\x10\n\x08question\x18\x02 \x01(\t\x12\x17\n\x0f\x65xpected_answer\x18\x03 \x01(\t\x12\x12\n\naudio_path\x18\x04 \x01(\t\x12\x10\n\x08img_path\x18\x05 \x01(\t\"n\n\x1d\x43ommunicationFeedbackResponse\x12\x19\n\x11positive_feedback\x18\x01 \x01(\t\x12\x19\n\x11negative_feedback\x18\x02 \x01(\t\x12\x17\n\x0f\x65nhanced_answer\x18\x03 \x01(\t2\x82\x01\n\x1cPronunciationFeedbackService\x12\x62\n\x15PronunciationFeedback\x12#.proto.PronunciationFeedbackRequest\x1a$.proto.PronunciationFeedbackResponse2\x82\x01\n\x1c\x43ommunicationFeedbackService\x12\x62\n\x15\x43ommunicationFeedback\x12#.proto.CommunicationFeedbackRequest\x1a$.proto.CommunicationFeedbackResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -24,13 +24,13 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['_PRONUNCIATIONFEEDBACKREQUEST']._serialized_start=25
   _globals['_PRONUNCIATIONFEEDBACKREQUEST']._serialized_end=106
   _globals['_PRONUNCIATIONFEEDBACKRESPONSE']._serialized_start=109
-  _globals['_PRONUNCIATIONFEEDBACKRESPONSE']._serialized_end=308
-  _globals['_COMMUNICATIONFEEDBACKREQUEST']._serialized_start=311
-  _globals['_COMMUNICATIONFEEDBACKREQUEST']._serialized_end=439
-  _globals['_COMMUNICATIONFEEDBACKRESPONSE']._serialized_start=441
-  _globals['_COMMUNICATIONFEEDBACKRESPONSE']._serialized_end=551
-  _globals['_PRONUNCIATIONFEEDBACKSERVICE']._serialized_start=554
-  _globals['_PRONUNCIATIONFEEDBACKSERVICE']._serialized_end=684
-  _globals['_COMMUNICATIONFEEDBACKSERVICE']._serialized_start=687
-  _globals['_COMMUNICATIONFEEDBACKSERVICE']._serialized_end=817
+  _globals['_PRONUNCIATIONFEEDBACKRESPONSE']._serialized_end=313
+  _globals['_COMMUNICATIONFEEDBACKREQUEST']._serialized_start=316
+  _globals['_COMMUNICATIONFEEDBACKREQUEST']._serialized_end=444
+  _globals['_COMMUNICATIONFEEDBACKRESPONSE']._serialized_start=446
+  _globals['_COMMUNICATIONFEEDBACKRESPONSE']._serialized_end=556
+  _globals['_PRONUNCIATIONFEEDBACKSERVICE']._serialized_start=559
+  _globals['_PRONUNCIATIONFEEDBACKSERVICE']._serialized_end=689
+  _globals['_COMMUNICATIONFEEDBACKSERVICE']._serialized_start=692
+  _globals['_COMMUNICATIONFEEDBACKSERVICE']._serialized_end=822
 # @@protoc_insertion_point(module_scope)

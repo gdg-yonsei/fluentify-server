@@ -16,22 +16,22 @@ class PronunciationFeedbackRequest(_message.Message):
     def __init__(self, sentence: _Optional[str] = ..., audio_path: _Optional[str] = ..., tip: _Optional[str] = ...) -> None: ...
 
 class PronunciationFeedbackResponse(_message.Message):
-    __slots__ = ("transcript", "incorrect_indexes", "pronunciation_score", "decibel", "speech_rate", "positive_feedback", "negative_feedback")
+    __slots__ = ("transcript", "incorrect_indexes", "pronunciation_score", "volume_score", "speed_score", "positive_feedback", "negative_feedback")
     TRANSCRIPT_FIELD_NUMBER: _ClassVar[int]
     INCORRECT_INDEXES_FIELD_NUMBER: _ClassVar[int]
     PRONUNCIATION_SCORE_FIELD_NUMBER: _ClassVar[int]
-    DECIBEL_FIELD_NUMBER: _ClassVar[int]
-    SPEECH_RATE_FIELD_NUMBER: _ClassVar[int]
+    VOLUME_SCORE_FIELD_NUMBER: _ClassVar[int]
+    SPEED_SCORE_FIELD_NUMBER: _ClassVar[int]
     POSITIVE_FEEDBACK_FIELD_NUMBER: _ClassVar[int]
     NEGATIVE_FEEDBACK_FIELD_NUMBER: _ClassVar[int]
     transcript: str
     incorrect_indexes: _containers.RepeatedScalarFieldContainer[int]
-    pronunciation_score: float
-    decibel: float
-    speech_rate: float
+    pronunciation_score: int
+    volume_score: int
+    speed_score: int
     positive_feedback: str
     negative_feedback: str
-    def __init__(self, transcript: _Optional[str] = ..., incorrect_indexes: _Optional[_Iterable[int]] = ..., pronunciation_score: _Optional[float] = ..., decibel: _Optional[float] = ..., speech_rate: _Optional[float] = ..., positive_feedback: _Optional[str] = ..., negative_feedback: _Optional[str] = ...) -> None: ...
+    def __init__(self, transcript: _Optional[str] = ..., incorrect_indexes: _Optional[_Iterable[int]] = ..., pronunciation_score: _Optional[int] = ..., volume_score: _Optional[int] = ..., speed_score: _Optional[int] = ..., positive_feedback: _Optional[str] = ..., negative_feedback: _Optional[str] = ...) -> None: ...
 
 class CommunicationFeedbackRequest(_message.Message):
     __slots__ = ("context", "question", "expected_answer", "audio_path", "img_path")
