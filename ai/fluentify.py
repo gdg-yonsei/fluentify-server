@@ -117,7 +117,7 @@ class Fluentify:
             return None
 
     def ProFeedback(self, input):
-        ground_truth = input["practice-sentece"]
+        ground_truth = input["practice-sentence"]
         self.EvaluatePro(f"{self.audio_path}/{input['user-audio']}")
         self.GetWer(self.pro_transcription.upper(), ground_truth.upper())
         sentence_lst = ground_truth.split(" ")
