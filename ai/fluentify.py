@@ -98,7 +98,7 @@ class Fluentify:
             return 5
 
     def ComFeedback(self, input):
-        image = Part.from_uri(f"{self.gcs_path}/img/{input['img']}", mime_type="image/jpeg")
+        image = Part.from_uri(f"{self.gcs_path}/{input['img']}", mime_type="image/jpeg")
         response = self.ars_model.transcribe(f"{self.audio_path}/{input['user-audio']}")
         self.com_trnascription = response.text
         output = {"transcription": self.com_trnascription}
