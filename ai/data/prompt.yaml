@@ -43,11 +43,11 @@ gen-sent : |-
   Respond in JSON format. WITHOUT Any additional words.
   [
     {{
-      "practice-sentece" : ' ',
+      "practice-sentence" : ' ',
       "tip" :  ' '
     }},
     {{
-      "practice-sentece" : ' ',
+      "practice-sentence" : ' ',
       "tip" : ' '
     }},
     ..

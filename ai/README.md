@@ -71,7 +71,7 @@ Input
 ```js
 {
       "user-audio" : "example1.m4a",
-      "practice-sentece": "It's autumn now, and the leaves are turning beautiful colors.",
+      "practice-sentence": "It's autumn now, and the leaves are turning beautiful colors.",
       "tip": "Say 'aw-tum,' not 'ay-tum.'"
 }
 ```
