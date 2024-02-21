@@ -35,7 +35,6 @@ __all__ = [
     "CharacterOutput",
     "process_words",
     "process_characters",
-    "get_incorrect_idx",
 ]
 
 
@@ -129,7 +128,7 @@ class WordOutput:
     content: list
 
 
-def get_incorrect_idx(
+def get_incorrect_idxes(
         reference: Union[str, List[str]],
         hypothesis: Union[str, List[str]],
         reference_transform: Union[tr.Compose, tr.AbstractTransform] = wer_default,
@@ -194,20 +193,20 @@ def get_incorrect_idx(
             reference_sentence, hypothesis_sentence
         )
 
-        #### 
+        ####
         # count the number of edits of each type
         # substitutions = sum(1 if op.tag == "replace" else 0 for op in edit_ops)
         # deletions = sum(1 if op.tag == "delete" else 0 for op in edit_ops)
         # insertions = sum(1 if op.tag == "insert" else 0 for op in edit_ops)
         # hits = len(reference_sentence) - (substitutions + deletions)
-        ##### 
+        #####
 
         # content
         substitutions_content = [op.src_pos if op.tag == "replace" else None for op in edit_ops]
         deletions_content = [op.src_pos if op.tag == "delete" else None for op in edit_ops]
         insertions_content = [op.src_pos if op.tag == "insert" else None for op in edit_ops]
 
-        # hits_content 
+        # hits_content
         # hits = len(reference_sentence) - (substitutions + deletions)
         full_substitutions_content += substitutions_content
         full_deletions_content += deletions_content
@@ -264,8 +263,8 @@ def get_incorrect_idx(
     #     substitutions=num_substitutions,
     #     insertions=num_insertions,
     #     deletions=num_deletions,
-    #     content = {"substitutions": full_substitutions_content, 
-    #                 "deletions": full_deletions_content, 
+    #     content = {"substitutions": full_substitutions_content,
+    #                 "deletions": full_deletions_content,
     #                 "insertions":full_insertions_content}
     # )
 

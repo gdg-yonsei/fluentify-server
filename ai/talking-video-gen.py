@@ -1,8 +1,6 @@
 # Imports the Google Cloud stt library
 import json
 import os
-import time
-from datetime import datetime
 
 import cv2
 import pandas as pd
@@ -10,6 +8,7 @@ import stable_whisper
 from PIL import Image
 from google.cloud import texttospeech
 from moviepy.editor import VideoFileClip, AudioFileClip
+from tqdm import tqdm
 
 
 # gcloud auth application-default login
@@ -26,16 +25,17 @@ class TalkingGenerator:
         self.data_path = './data'
         self.character_path = f'{self.data_path}/character'
 
-        self.ts = datetime.now().strftime("%m%d%H%M%S")
-        self.dir_path = f'{self.data_path}/video_output/{self.ts}'
+        # self.ts  = datetime.now().strftime("%m%d%H%M%S")
+        # self.dir_path = f'{self.data_path}/video_output/{self.ts}'
+        self.dir_path = f'{self.data_path}/pro-video-output'
 
         self.audio_path = self.dir_path + '/output.mp3'
         self.video_path = self.dir_path + "/output.mp4"
         self.wordoffset_path = self.dir_path + '/word_offset.json'
         self.output_path = self.dir_path + '/fianal-output.mp4'
 
-        if not os.path.exists(self.dir_path):
-            os.makedirs(self.dir_path)
+        # if not os.path.exists(self.dir_path):
+        #     os.makedirs(self.dir_path)
 
         img_lst = os.listdir(self.character_path)
         self.close_img_lst = [img for img in img_lst if 'close' in img]
@@ -96,7 +96,7 @@ class TalkingGenerator:
         open_img = self.close_img_lst[0]
 
         for word in self.wordoffset.iloc:
-            ## CLOSE ## 
+            ## CLOSE ##
             if word['content'] == None:
                 # close_img = random.choice(self.close_img_lst)
                 for _ in range(int(word['time'])):
@@ -122,12 +122,14 @@ class TalkingGenerator:
         video.release()
 
     def MergeAudioVideo(self):
+
         video_clip = VideoFileClip(self.video_path)
         audio_clip = AudioFileClip(self.audio_path)
         final_clip = video_clip.set_audio(audio_clip)
         final_clip.write_videofile(self.output_path)
 
-    def Text2TalkingVideo(self, sentence):
+    def Text2TalkingVideo(self, sentence, fname="feedback"):
+        self.output_path = f'{self.dir_path}/{fname}.mp4'
         self.Text2Speech(sentence)
         self.Speech2Text()
         self.WordOffset()
@@ -138,9 +140,37 @@ class TalkingGenerator:
 
 if __name__ == "__main__":
     tg = TalkingGenerator()
-    sentence = "The most important thing to keep in mind when designing this car would be to make sure that it is made of a metal that the superhero can control with his mind."
+
+    with open('./data/pro-data.json') as f:
+        pro_dataset = json.load(f)
+
+    with open('./data/com-data.json') as f:
+        com_dataset = json.load(f)
+
+        for i, pro_data in tqdm(enumerate(pro_dataset)):
+            pro_data.update({'practice-sentence-w-tip': pro_data['practice-sentence'] + ' ' + pro_data['tip']})
+            sentence = pro_data["practice-sentence-w-tip"]
+            fname = pro_data["id"]
+            tg.Text2TalkingVideo(sentence, fname)
+
+    # for i,com_data in tqdm(enumerate(com_dataset)):
+    #     sentence = com_data["question"]
+    #     fname = com_data["id"]
+    #     tg.Text2TalkingVideo(sentence, fname)
+
+    with open('./data/pro-data.json', 'w') as f:
+        json.dump(pro_dataset, f, indent=4)
+
+    # with open('./data/com-data.json', 'w') as f:
+    #     json.dump(com_dataset, f, indent=4)
+    # for com_data in tqdm(com_dataset):
+    #     sentence = com_data['question']
+    #     fname = com_data['img'].split('.')[0]
+    #     tg.Text2TalkingVideo(sentence, fname)
+
+    # sentence ="The most important thing to keep in mind when designing this car would be to make sure that it is made of a metal that the superhero can control with his mind."
     #  sentence =  "Let's imagine that you are a brave captain of a big ship. You are sailing on the high seas. Suddenly, you see a beautiful sunset. Look at this picture and tell me..."
-    time_ = time.time()
-    tg.Text2TalkingVideo(sentence)
-    time_ = time.time() - time_
-    print(time_)
+    # time_  = time.time()
+    # tg.Text2TalkingVideo(sentence=,fname=)
+    # time_  = time.time() - time_
+    # print(time_)
