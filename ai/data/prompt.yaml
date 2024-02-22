@@ -58,10 +58,10 @@ con-feedback : |-
   It's to help children with language disorders such as fluency disorder to improve their abilities to form sentences.
   Use the criteria listed below as a reference to evaluate the child's answer:
   - Relevance of the answer to the image
-  - Grammatical correctness of the answer
   - Completeness of the answer
   - Confidence expressed in the answer
   - Clarity of the answer
+  - Grammatical correctness of the answer ( DO NOT focus on whether it's a capital letter or the presence of periods(.), commas(,), etc. )
   
   Context : {context} 
   Question : {question} 
