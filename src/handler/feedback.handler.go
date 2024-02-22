@@ -84,6 +84,7 @@ func (handler *FeedbackHandlerImpl) GetPronunciationFeedback(c echo.Context) err
 	}
 
 	transcript := firstToUpper(feedbackResponse.GetTranscript())
+	negativeFeedback := getNegativeFeedbackOrDefault(feedbackResponse.GetNegativeFeedback())
 
 	result := pb.GetPronunciationFeedbackResponse{
 		PronunciationFeedback: &pb.PronunciationFeedbackDTO{
@@ -94,7 +95,7 @@ func (handler *FeedbackHandlerImpl) GetPronunciationFeedback(c echo.Context) err
 			VolumeScore:        feedbackResponse.GetVolumeScore(),
 			SpeedScore:         feedbackResponse.GetSpeedScore(),
 			PositiveFeedback:   feedbackResponse.GetPositiveFeedback(),
-			NegativeFeedback:   feedbackResponse.GetNegativeFeedback(),
+			NegativeFeedback:   negativeFeedback,
 		},
 	}
 
@@ -157,12 +158,13 @@ func (handler *FeedbackHandlerImpl) GetCommunicationFeedback(c echo.Context) err
 		log.Printf("grpc request failed: %v", err)
 		return model.NewCustomHTTPError(http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
 	}
+	negativeFeedback := getNegativeFeedbackOrDefault(response.GetNegativeFeedback())
 
 	result := pb.GetCommunicationFeedbackResponse{
 		CommunicationFeedback: &pb.CommunicationFeedbackDTO{
 			SceneId:          request.GetSceneId(),
 			PositiveFeedback: response.GetPositiveFeedback(),
-			NegativeFeedback: response.GetNegativeFeedback(),
+			NegativeFeedback: negativeFeedback,
 			EnhancedAnswer:   response.GetEnhancedAnswer(),
 		},
 	}
@@ -207,6 +209,13 @@ func firstToUpper(s string) string {
 	}
 	lowerCase := strings.ToLower(s)
 	return string(unicode.ToUpper(r)) + lowerCase[size:]
+}
+
+func getNegativeFeedbackOrDefault(negativeFeedback string) string {
+	if negativeFeedback == "" {
+		return "Nothing to improve. Great job!"
+	}
+	return negativeFeedback
 }
 
 func FeedbackHandlerInit(sentenceService service.SentenceService, sceneService service.SceneService, storageService service.StorageService) *FeedbackHandlerImpl {
