@@ -5,7 +5,9 @@
 ## Overview
 *fluentify* is our submission to Google Solution Challenge 2024, a solution addressing the communication hurdles experienced by children with hearing impairments. By providing personalized feedback to their speech, it aims to empower confidence in communication and promote inclusivity in society.
 
-This is the repository for the client application. You can check out our other components such as [fluentify - Flutter](https://github.com/gdsc-ys/fluentify-flutter) and [fluentify - IDL](https://github.com/gdsc-ys/fluentify-idl).
+This is the repository for the server application. It is composed of two components, API server and AI server, located in `src` and `ai` directories respectively.
+
+You can check out our other components such as [fluentify - Flutter](https://github.com/gdsc-ys/fluentify-flutter) and [fluentify - IDL](https://github.com/gdsc-ys/fluentify-idl).
 
 ![architecture](https://github.com/gdsc-ys/fluentify-server/assets/43549670/184a6bb3-24a7-44ba-9834-b014d4fbb4d3)
 
